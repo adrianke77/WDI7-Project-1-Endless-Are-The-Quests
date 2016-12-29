@@ -1,5 +1,4 @@
-# Your Project Name
-
+# WDI Unit 1 Game Projects
 Two game projects are here, both as submissions for the General Assembly Web Developer Immersive full-time course Unit 1 project assignment
 
 Crazy Chess: play chess with randomised selection of pieces and initial board arrangement. Forget every opening you've ever learnt.
