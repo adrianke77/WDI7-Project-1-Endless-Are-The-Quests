@@ -1,0 +1,90 @@
+
+* {
+  box-sizing : border-box;
+}
+html. body {
+  height  : 100%;
+  width   : 100%;
+  margin  : 0;
+  padding : 0;
+}
+.body {
+  display         : flex;
+  justify-content : center;
+  flex-direction  : column ;
+}
+.status {
+  display         : flex;
+  margin-top      : 50px;
+  justify-content : center;
+}
+.instructions {
+  display         : flex;
+  margin-top      : 25px;
+  justify-content : center;
+}
+.chessboard {
+  display         : flex;
+  margin-top      : 50px;
+  flex-direction  : column;
+  justify-content : center;
+}
+.row {
+  display         : flex;
+  width           : auto;
+  flex-flow       : row;
+  justify-content : center;
+}
+.box {
+  display         : flex;
+  height          : 41px;
+  width           : 41px;
+  margin          : 1px;
+  border          : 1px solid black;
+  flex-direction  : row;
+  justify-content : center;
+  align-items     : center;
+}
+.selected {
+  outline: 5px solid blue;
+}
+.sprites {
+  background      : url('./chess-figures.png') no-repeat;
+  background-size : 240px 80px;
+}
+.spriteRB {
+  background-position : -2px -1px;
+}
+.spriteRW {
+  background-position : -2px -38px;
+}
+.spriteBB{
+  background-position : -42px -1px;
+}
+.spriteBW{
+  background-position : -42px -38px
+}
+.spriteQB{
+  background-position : -82px -1px;
+}
+.spriteQW{
+  background-position : -82px -38px
+}
+.spriteKB{
+  background-position : -122px -1px
+}
+.spriteKW{
+  background-position : -122px -38px
+}
+.spriteNB{
+  background-position : -162px -1px
+}
+.spriteNW{
+  background-position : -162px -38px
+}
+.spritePB{
+  background-position : -202px -1px
+}
+.spritePW{
+  background-position : -202px -38px
+}
