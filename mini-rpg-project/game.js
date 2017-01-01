@@ -15,8 +15,7 @@ GameSys.prototype.initNumbSeedFromString = function( string ) {
   numbSeed = x - Math.floor( x );
 }
 GameSys.prototype.makeKeypressListeners = function( worldBoardInstance ) {
-  var self = this;
-  console.log( self )
+var self = this;
   $( document ).keyup( function( event ) {
     var isMoved = false
     switch ( event.which ) {
@@ -38,6 +37,10 @@ GameSys.prototype.makeKeypressListeners = function( worldBoardInstance ) {
       case 90: //z, SW direction
         isMoved = worldBoardInstance.playerMove( "SW" );
         break;
+      case 83: //s, Shout to trigger monsters
+        isMoved = true;
+        worldBoardInstance.shout();
+        break;
     }
     if ( isMoved === true ) self.movesMade++
   } )
@@ -46,7 +49,7 @@ GameSys.prototype.resetGame = function() {
   var width, height, string
   width = 20
   height = 20
-  string = "dragon"
+  string = "ninja"
   var worldBoard = new WorldBoard( width, height );
   gameSys.initNumbSeedFromString( string );
   worldBoard.makeBlankBoardHtml();
@@ -56,8 +59,7 @@ GameSys.prototype.resetGame = function() {
   worldBoard.randomizeCreatures();
   worldBoard.drawCreatures();
   gameSys.makeKeypressListeners( worldBoard );
-  // worldBoard.drawFoglessMap() //debug only, turn off when playing
-  console.log(worldBoard.creatureLocs);
+  worldBoard.drawEntireMap() //debug only, turn off when playing
 
 }
 
