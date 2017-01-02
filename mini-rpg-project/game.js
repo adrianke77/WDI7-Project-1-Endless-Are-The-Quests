@@ -15,7 +15,7 @@ GameSys.prototype.initNumbSeedFromString = function( string ) {
   numbSeed = x - Math.floor( x );
 }
 GameSys.prototype.makeKeypressListeners = function( worldBoardInstance ) {
-var self = this;
+var self = this; //make context visible to inside of event handler
   $( document ).keyup( function( event ) {
     var isMoved = false
     switch ( event.which ) {
@@ -47,9 +47,9 @@ var self = this;
 }
 GameSys.prototype.resetGame = function() {
   var width, height, string
-  width = 20
-  height = 20
-  string = "ninja"
+  width = 30;
+  height = 30;
+  string = "ninja";
   var worldBoard = new WorldBoard( width, height );
   gameSys.initNumbSeedFromString( string );
   worldBoard.makeBlankBoardHtml();
@@ -60,7 +60,6 @@ GameSys.prototype.resetGame = function() {
   worldBoard.drawCreatures();
   gameSys.makeKeypressListeners( worldBoard );
   worldBoard.drawEntireMap() //debug only, turn off when playing
-
 }
 
 //MAIN CODE
