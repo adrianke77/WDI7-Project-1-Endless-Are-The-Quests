@@ -72,7 +72,11 @@ GameSys.prototype.newgame = function() {
   this.player = "W"
   this.gameState = "waitForPick"
   board = new Board
-  board.fillStartingBoard()
+  // board.fillStartingBoard("randomAll")
+  // board.fillStartingBoard("randomPositions")
+  board.fillStartingBoard("randomPieces")
+  // board.fillStartingBoard("normal")
+  // choose from randomAll, randomPositions, randomPieces or normal
   this.drawLayoutToHtml()
   this.makeGridListeners()
   this.updateStatusDisplays()
@@ -95,4 +99,4 @@ gameSys.newgame()
 // board.pawnMovesSearch(3, 6, "W")
 // cl(board.layout[6][3].validMoves)
 // cl(board.areThereValidMoves(3, 6))
-console.log(board.findKings())
+// console.log(board.findKings())

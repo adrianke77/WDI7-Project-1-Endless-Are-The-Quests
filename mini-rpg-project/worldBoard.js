@@ -1,5 +1,5 @@
-// when accessing array or HTML : y first, then x (including R-Y-C-X on classes)
-// when passing arguments to function or two-element array : x first, then y
+// when accessing array or HTML : y first, then x (and R-Y-C-X on CSS selectors)
+// when passing arguments to function or handling coord-pair array : x first, then y
 
 const landTilesCoords = {
   plain: [ 0, 0 ],
@@ -19,7 +19,7 @@ const creatureTypes = {
   //the higher the rarity the less common the monster
   //treasureMax is a non-included max
   //for drawing sprite
-  eagle: [ 2, "fly", 4, 3, 0, 3, 6, 5, 10 ],
+  eagle: [ 2, "fly", 4, 3, 0, 3, 7, 5, 10 ],
   goblin: [ 3, "walk", 3, 1, 2, 4, 4, 2, 10 ],
   dog: [ 3, "walk", 2, 2, 0, 3, 7, 3, 10 ],
   deathrose: [ 5, "walk", 5, 1, 3, 5, 5, 3, 20 ],
@@ -45,13 +45,12 @@ const terrainDefenseVals = {
   plain: 1,
   swamp: 0.8,
   water: 0.6,
-  mountain: 1.5,
-  forest: 1.25
+  mountain: 1.2,
+  forest: 1.1
 }
 
 var numbSeed = 0
   // this number will change every time genNumbSeed is called
-
 
 //REPEATABLE RANDOM GENERATION
 function genNum() {
@@ -76,23 +75,31 @@ function genRange( min, max ) {
 }
 //MISC FUNCTIONS
 function minZero( input ) {
-  //forces minimum of zero on value
+  //forces value to have minimum of zero
   var output = input;
   if ( output < 0 ) output = 0;
   return output
 }
 
+function factorial( number ) {
+  //returns factorial of number
+  var output = 0;
+  for ( i = 0; i < number; i++ )
+    output += i;
+  return output
+}
+
 //PLAYER CONSTRUCTOR
-function Player( name ) {
-  this.name = name
+function Player() {
   this.type = "player"
-  this.health = 15
-  this.maxHealth = 15
+  this.health = 20
+  this.maxHealth = 20
   this.movement = "walk"
   this.strength = 3
   this.speed = 1
   this.gold = 10
-  this.exp = 0
+  this.xp = 0
+  this.xpToNextLevel = 0
 }
 
 //CREATURE CONSTRUCTOR
@@ -114,7 +121,7 @@ function WorldBoard( width, height ) {
   this.playerY = 1;
   this.height = height;
   this.width = width;
-  this.xpScale = 1 / ( Math.sqrt( width * height ) / 20 ) //bigger the map, lower the scale
+  this.xpScale = 1;
   this.landTiles = []; // stores terrain as strings
   this.creatureLocs = []; //stores creatures as Creature instances
   for ( var i = 0; i < this.height; i++ ) {
@@ -138,8 +145,10 @@ WorldBoard.prototype.makeBlankBoardHtml = function () {
       var creatureCell = $( "<div></div>" );
       var fogCell = $( "<div></div>)" );
       landCell.addClass( "landbox landR" + rowidx + "C" + colidx );
-      creatureCell.addClass( "creatbox creatR" + rowidx + "C" + colidx );
-      fogCell.addClass( "fogbox fogR" + rowidx + "C" + colidx + " fog" );
+      creatureCell.addClass( "creatbox creatR" + rowidx + "C" +
+        colidx + " waiting" );
+      fogCell.addClass( "fogbox fogR" + rowidx + "C" + colidx +
+        " fog" );
       var rowshift =
         rowidx % 2 === 0 ? 15 : 0;
       var topPos = 24 * rowidx;
@@ -167,7 +176,8 @@ WorldBoard.prototype.drawTerrain = function () {
       var xpos = landTilesCoords[ tile ][ 0 ];
       var ypos = landTilesCoords[ tile ][ 1 ];
       var posString = xpos + "px " + ypos + "px";
-      $( ".landR" + rowidx + "C" + colidx ).css( "background-position", posString );
+      $( ".landR" + rowidx + "C" + colidx ).css(
+        "background-position", posString );
     } );
   } );
 }
@@ -192,7 +202,7 @@ WorldBoard.prototype.randomizeTerrain = function () {
     this.landTiles[ genMax( y ) ][ genMax( x ) ] = "forest";
   for ( var i = 0; i < mountainTiles; i++ )
     this.landTiles[ genMax( y ) ][ genMax( x ) ] = "mountain";
-  this.landTiles[1][1] = "forest" // make sure player starts in a forest
+  this.landTiles[ 1 ][ 1 ] = "forest" // make sure player starts in a forest
 }
 WorldBoard.prototype.drawEntireMap = function () {
   //check all land/monster locations, used for debugging
@@ -200,7 +210,8 @@ WorldBoard.prototype.drawEntireMap = function () {
   this.landTiles.forEach( function ( row, rowindex ) {
     row.forEach( function ( tile, colindex ) {
       $( ".fogR" + rowindex + "C" + colindex ).removeClass( "fog" );
-      $( ".landR" + rowindex + "C" + colindex ).addClass( "background" );
+      $( ".landR" + rowindex + "C" + colindex ).addClass(
+        "background" );
       self.drawCreature( colindex, rowindex );
     } )
   } )
@@ -212,7 +223,8 @@ WorldBoard.prototype.randomizeCreatures = function () {
     var maxY = this.height;
     var maxX = this.width;
     var tilesNumber = maxX * maxY;
-    noOfMonster = Math.floor( tilesNumber / creatureTypes[ creatureType ][ 8 ] ) + 1;
+    noOfMonster = Math.floor( tilesNumber / creatureTypes[ creatureType ][ 8 ] ) +
+      1;
     for ( var i = 0; i < noOfMonster; i++ ) {
       this.makeACreature( creatureType )
     }
@@ -225,7 +237,10 @@ WorldBoard.prototype.makeACreature =
     var movement = creatureTypes[ creatureType ][ 1 ];
     var strength = creatureTypes[ creatureType ][ 2 ];
     var strengthScaled =
-      ( strength - 3 ) * Math.sqrt( this.width * this.height ) / 20;
+      Math.floor( ( strength - 3 ) * Math.sqrt( this.width * this.height ) / 20 );
+    if ( strengthScaled >= this.width ) strengthScaled = this.width - 1
+    if ( strengthScaled >= this.height ) strengthScaled = this.height - 1
+      // prevent it from going outside the map
     var xpos = minZero( genRange( strengthScaled, this.width ) );
     var ypos = minZero( genRange( strengthScaled, this.height ) );
     var terrainHere = this.landTiles[ ypos ][ xpos ];
@@ -248,7 +263,8 @@ WorldBoard.prototype.drawCreatures = function () {
   this.oldNoFogZone.forEach( function ( ele, ind, arr ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
-    $( ".creatR" + y + "C" + x ).removeClass( "creature" );
+    $( ".creatR" + y + "C" + x ).removeClass( "creature" ).removeClass(
+      "hunting" );
   } )
   this.noFogZone.forEach( function ( ele, ind, arr ) {
     var x = ele[ 0 ];
@@ -277,10 +293,14 @@ WorldBoard.prototype.drawCreature = function ( x, y ) {
       .addClass( "creature" )
       .css( "background-position", posString );
   }
+  this.ifHuntingAnimate( x, y )
 }
-WorldBoard.prototype.initPlayer = function ( playerName ) {
-  this.creatureLocs[ 1 ][ 1 ] = new Player( playerName )
-  this.updateFog()
+WorldBoard.prototype.initPlayer = function () {
+  this.creatureLocs[ 1 ][ 1 ] = new Player()
+  this.updateFog();
+  this.updateHealthDisplay();
+  this.updateXpToNextLevel();
+  this.updateSkillDisplay();
 }
 WorldBoard.prototype.updateFog = function () {
   var noFogZone = this.calculateNoFogZone( this.playerX, this.playerY )
@@ -394,7 +414,6 @@ WorldBoard.prototype.playerMove = function ( direction ) {
   var x = this.playerX;
   var y = this.playerY;
   if ( direction === "wait" ) {
-    console.log( "wait triggered" )
     this.updateFog( targetX, targetY );
     this.enemyTurn();
     return true;
@@ -449,22 +468,28 @@ WorldBoard.prototype.activateNearbyEnemies = function ( self, x, y ) {
     var creature = self.creatureLocs[ y ][ x ]
     if ( creature && creature.type !== "player" ) {
       self.creatureLocs[ y ][ x ].isHunting = true;
+      self.ifHuntingAnimate( x, y );
     }
   } )
+}
+WorldBoard.prototype.ifHuntingAnimate = function ( x, y ) {
+  var creature = this.creatureLocs[ y ][ x ]
+  if ( creature && creature.isHunting === true )
+    $( ".creatR" + y + "C" + x ).removeClass( "waiting" ).addClass( "hunting" )
 }
 WorldBoard.prototype.enemyTurn = function () {
   var self = this;
   this.creatureLocs.forEach( function ( row, y ) {
     row.forEach( function ( creature, x ) {
-      if ( creature && creature.isHunting === true && creature.justMoved === false ) {
-        console.log( "creature is", creature, "creature.isHunting is", creature.isHunting, "creature.justMoved is", creature.just )
+      if ( creature && creature.isHunting === true && creature.justMoved ===
+        false ) {
         self.runEnemyAI( x, y )
       }
     } )
   } )
   this.creatureLocs.forEach( function ( row, y ) {
     row.forEach( function ( creature, x ) {
-      if ( creature ) creature.justMoved = false; 
+      if ( creature ) creature.justMoved = false;
       // reset moved status for all creatures.
     } )
   } )
@@ -495,16 +520,26 @@ WorldBoard.prototype.attackOnPlayer = function ( x, y ) {
   var terrainDefenseMod = terrainDefenseVals[ playerTerrain ];
   var strengthCompare =
     minZero( attacker.strength - ( 0.5 * player.strength * terrainDefenseMod ) );
-  console.log( "strength comparison when player attacked is ", strengthCompare );
+  console.log( "strength comparison when player attacked is ",
+    strengthCompare );
   damageDone = minZero( genMax( strengthCompare + 1 ) );
   this.creatureLocs[ this.playerY ][ this.playerX ].health -= damageDone;
   console.log( "damage done to player:", damageDone );
-  console.log( "player health:", player.health );;
+  console.log( "player health:", player.health );
+  this.updateHealthDisplay();
   if ( player.health <= 0 ) {
     console.log( "the player has died!!!" )
+    $( ".health" ).css( "background-size", "100% 1000%" )
     this.creatureLocs[ this.playerY ][ this.playerX ] = null
     this.drawCreature( this.playerY, this.playerX )
   }
+}
+WorldBoard.prototype.updateHealthDisplay = function () {
+  var player = this.creatureLocs[ this.playerY ][ this.playerX ]
+  var healthFraction = player.health / player.maxHealth
+  var firePosition = healthFraction * 2
+  $( ".health" ).css( "background-position", "0px -" + firePosition + "em" )
+    .text( "Vitality: " + player.health + "/" + player.maxHealth )
 }
 WorldBoard.prototype.attackByPlayer = function ( player, targetX, targetY ) {
   var self = this
@@ -525,11 +560,51 @@ WorldBoard.prototype.attackByPlayer = function ( player, targetX, targetY ) {
     var goldDrop = genRange( enemy.treasureMin, enemy.treasureMax );
     console.log( enemy.type, "has", goldDrop, "gold pieces on its body" );
     player.gold += goldDrop;
-    console.log( "The player now has", player.gold, "gold coins." )
-      // this.checkForLevel()
+    console.log( "The sojourner now has", player.gold, "gold coins." )
+    player.xp += Math.floor( 10 * ( enemy.strength * this.xpScale ) )
+    this.updatePlayerLevel( player )
     this.creatureLocs[ targetY ][ targetX ] = null;
-    this.drawCreature( targetX, targetY );
+    this.drawCreature( targetX, targetY )
+    this.updateSkillDisplay();
   }
+}
+WorldBoard.prototype.updatePlayerLevel = function ( player ) {
+  var nextLevelXp = 30 * factorial( player.strength );
+  this.updateXpToNextLevel();
+  if ( player.xp > nextLevelXp ) {
+    console.log(
+      "The sojourner has become stronger through combat experience!" );
+    player.strength += 1;
+    console.log( "The sojourner's strength is now", player.strength )
+    player.maxHealth += 5;
+    var healing = Math.floor( ( player.maxHealth - player.health ) / 2 )
+    console.log(
+      "The breakthrough recovers half of the sojourner's lost vitality; he heals for ",
+      healing, "points" )
+    player.health += healing;
+    this.updateHealthDisplay();
+    this.updateSkillDisplay();
+  }
+}
+WorldBoard.prototype.updateXpToNextLevel = function () {
+  var player = this.creatureLocs[ this.playerY ][ this.playerX ];
+  player.xpToNextLevel = 30 * factorial( player.strength );
+}
+WorldBoard.prototype.updateSkillDisplay = function () {
+  var player = this.creatureLocs[ this.playerY ][ this.playerX ];
+  firstColor = parseInt( 255 - ( 255 * player.strength / 20 ) );
+  secondColor = parseInt( 255 * player.strength / 20 );
+  xpFraction = 1 - ( player.xpToNextLevel - player.xp ) / player.xpToNextLevel;
+  xpBkgrndPosition = 1.6 - ( 1.6 * xpFraction );
+  gradientString = "linear-gradient(rgba(255,255," +
+    firstColor + ",1),rgba(0,0," + secondColor + ",1))"
+  bkString = "0 " + xpBkgrndPosition + "em"
+  $( ".strength" ).text( "Level " + player.strength )
+  $( ".strength" ).css( "background", gradientString )
+  $( ".strength" ).css( "background-position", bkString )
+}
+WorldBoard.prototype.updateDefenseDisplay = function () {
+  var location
 }
 WorldBoard.prototype.moveTowardsPlayer = function ( x, y ) {
   //parameters are coordinates for creature location
@@ -547,11 +622,14 @@ WorldBoard.prototype.moveTowardsPlayer = function ( x, y ) {
   var targetX = targetCell[ 0 ];
   var targetTerrain = this.landTiles[ targetY ][ targetX ];
   var movement = this.creatureLocs[ y ][ x ].movement
-  if ( !this.creatureLocs[ targetY ][ targetX ] )
-    if ( this.canMoveOnTerrain( movement, targetTerrain ) ) {
-      this.creatureLocs[ targetY ][ targetX ] = this.creatureLocs[ y ][ x ];
-      this.creatureLocs[ targetY ][ targetX ].justMoved = true;
-      this.creatureLocs[ y ][ x ] = null;
-      this.drawCreatures();
-    }
+  if ( targetY > -1 && targetX > -1 && targetY < this.height && targetX <
+    this.width )
+    if ( !this.creatureLocs[ targetY ][ targetX ] )
+      if ( this.canMoveOnTerrain( movement, targetTerrain ) ) {
+        this.creatureLocs[ targetY ][ targetX ] = this.creatureLocs[ y ][
+              x ];
+        this.creatureLocs[ targetY ][ targetX ].justMoved = true;
+        this.creatureLocs[ y ][ x ] = null;
+        this.drawCreatures();
+      }
 }

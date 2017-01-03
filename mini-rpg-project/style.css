@@ -21,26 +21,23 @@ body{
   margin-top  : 50px;
   margin-left : 30px;
 }
-
 .background {
-  background      : url('./art/landhextiles-modded2.png') no-repeat;
+  z-index         : -10;
+  background      : url('./art/landhextiles-modded3.png') no-repeat;
   background-size : 340% 286%;
-  z-index : -10;
 }
-
 .creature {
-  background : url('./art/creatures-modded.png');
-  background-size: 900% 700%;
+  background      : url('./art/creatures-modded.png');
+  background-size : 900% 700%;
 }
-
 .creatbox {
-  position: absolute;
-  height: 20px;
-  width: 20px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 7.3px;
-  margin-bottom: 7.3px;
+  position      : absolute;
+  height        : 20px;
+  width         : 20px;
+  margin-top    : 7.3px;
+  margin-right  : 5px;
+  margin-bottom : 7.3px;
+  margin-left   : 5px;
 }
 .landbox {
   position : absolute;
@@ -63,10 +60,55 @@ body{
   height   : 34.6px;
   width    : 30px;
 }
-
 .fog {
-  background      : url('./art/landhextiles-modded3.png') no-repeat;
-  background-size : 340% 286%;
-  position: absolute;
-  background-position: 0px -66px;
+  position            : absolute;
+  background          : url('./art/landhextiles-modded3.png') no-repeat;
+  background-position : 0px -66px;
+  background-size     : 340% 286%;
 }
+.display{
+  position      : fixed;
+  z-index       : 10;
+  width         : auto;
+  padding       : 1%;
+  font-family   : 'VT323', monospace;
+  font-weight   : bold ;
+  color         : rgba(255,255,255,0.8);
+  text-shadow   : black 0 0 0.5em ;
+  border        : 0.1em solid rgba(0,0,0,0.8);
+  border-radius : 0.5em;
+}
+.health {
+  bottom              : 5%;
+  left                : 10%;
+  background          : url('./art/fire2.gif') no-repeat;
+  background-position : 0px -2em;
+  background-size     : 100% 250%;
+  text-shadow         : black 0 0 0.2em ;
+}
+.strength {
+  bottom          : 5%;
+  left            : 48%;
+  background      : linear-gradient( rgba(255,255,255,1),rgba(0,0,0,1));
+  background-size : 100% 100%;
+}
+.defense {
+  right  : 15%;
+  bottom : 5%;
+}
+.waiting {
+  animation : bounce 2s ease infinite;
+}
+.hunting {
+  animation : bounce 0.5s ease infinite;
+}
+@keyframes bounce {
+  0% {
+    margin-top : 3.5px;
+  }
+  50% {
+    margin-top : 6.5px;
+  }
+  100% {
+    margin-top : 3.5px;
+  }
