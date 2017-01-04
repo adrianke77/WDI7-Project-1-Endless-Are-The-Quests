@@ -17,7 +17,7 @@ GameSys.prototype.initNumbSeedFromString = function( string ) {
     seed += charValue;
   }
   var x = Math.sin( seed++ ) * 10000;
-  numbSeed = x - Math.floor( x );
+  numbSeed = x - Math.floor( x )
 }
 GameSys.prototype.makeKeypressListeners = function( worldBoardInstance ) {
   var self = this; //make context visible to inside of event handler
@@ -71,7 +71,7 @@ GameSys.prototype.makeFixedDisplays = function() {
   $( ".health" ).text( " Vitality" )
   $( ".strength" ).text( " Skill" )
   $( ".defense" ).text( " Defense" )
-  this.startFontHeight = this.windowStartWidth / 30;
+  this.startFontHeight = this.windowStartWidth / DisplayFontScale;
   $( ".display" ).css( "font-size", this.startFontHeight );
 }
 GameSys.prototype.resizeInfoDisplay = function( event ) {
@@ -83,9 +83,9 @@ GameSys.prototype.resizeInfoDisplay = function( event ) {
 GameSys.prototype.resetGame = function() {
   $( ".gameBoard" ).remove();
   var width, height, string;
-  width = 20;
-  height = 20;
-  string = "dragon";
+  width = 30;
+  height = 30;
+  string = "moocow";
   var worldBoard = new WorldBoard( width, height );
   gameSys.initNumbSeedFromString( string );
   worldBoard.makeBlankBoardHtml();
@@ -98,7 +98,7 @@ GameSys.prototype.resetGame = function() {
   worldBoard.randomizeCreatures();
   worldBoard.drawCreatures();
   //testing
-  worldBoard.drawEntireMap() //debug only, turn off when playing
+  // worldBoard.drawEntireMap() //debug only, turn off when playing
 }
 
 //MAIN CODE

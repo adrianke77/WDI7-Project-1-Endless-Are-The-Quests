@@ -1,6 +1,8 @@
 // when accessing array or HTML : y first, then x (and R-Y-C-X on CSS selectors)
 // when passing arguments to function or handling coord-pair array : x first, then y
 
+const DisplayFontScale = 30 // the bigger the nunmber the smaller the display font size
+
 const landTilesCoords = {
   plain: [ 0, 0 ],
   swamp: [ -36, 0 ],
@@ -18,7 +20,7 @@ const creatureTypes = {
   //sprite X and Y are in 1-index
   //the higher the rarity the less common the monster
   //treasureMax is a non-included max
-  //for drawing sprite
+  //for drawing sprite;
   eagle: [ 2, "fly", 4, 3, 0, 3, 7, 5, 10 ],
   goblin: [ 3, "walk", 3, 1, 2, 4, 4, 2, 10 ],
   dog: [ 3, "walk", 2, 2, 0, 3, 7, 3, 10 ],
@@ -44,7 +46,7 @@ const terrainDefenseVals = {
   // bonus to defense when being attacked depending on terrain
   plain: 1,
   swamp: 0.8,
-  water: 0.6,
+  water: 1,
   mountain: 1.2,
   forest: 1.1
 }
@@ -100,6 +102,7 @@ function Player() {
   this.gold = 10
   this.xp = 0
   this.xpToNextLevel = 0
+  this.xpPrevLevel = 0
 }
 
 //CREATURE CONSTRUCTOR
@@ -136,11 +139,11 @@ function WorldBoard( width, height ) {
   //coordinates
   this.oldNoFogZone = []; //stores the old zone to clear after each step
 }
-WorldBoard.prototype.makeBlankBoardHtml = function () {
+WorldBoard.prototype.makeBlankBoardHtml = function() {
   var gameBoard = $( "<div></div" );
   gameBoard.addClass( "gameBoard" )
-  this.landTiles.forEach( function ( row, rowidx ) {
-    row.forEach( function ( tile, colidx ) {
+  this.landTiles.forEach( function( row, rowidx ) {
+    row.forEach( function( tile, colidx ) {
       var landCell = $( "<div></div>" );
       var creatureCell = $( "<div></div>" );
       var fogCell = $( "<div></div>)" );
@@ -170,9 +173,9 @@ WorldBoard.prototype.makeBlankBoardHtml = function () {
   } );
   $( "body" ).append( gameBoard )
 }
-WorldBoard.prototype.drawTerrain = function () {
-  this.landTiles.forEach( function ( row, rowidx ) {
-    row.forEach( function ( tile, colidx ) {
+WorldBoard.prototype.drawTerrain = function() {
+  this.landTiles.forEach( function( row, rowidx ) {
+    row.forEach( function( tile, colidx ) {
       var xpos = landTilesCoords[ tile ][ 0 ];
       var ypos = landTilesCoords[ tile ][ 1 ];
       var posString = xpos + "px " + ypos + "px";
@@ -181,12 +184,12 @@ WorldBoard.prototype.drawTerrain = function () {
     } );
   } );
 }
-WorldBoard.prototype.randomizeTerrain = function () {
+WorldBoard.prototype.randomizeTerrain = function() {
   var x = this.width;
   var y = this.height;
   var tilesNumber = x * y;
-  this.landTiles.forEach( function ( row, rowidx, arr ) {
-    row.forEach( function ( tile, colidx, row ) {
+  this.landTiles.forEach( function( row, rowidx, arr ) {
+    row.forEach( function( tile, colidx, row ) {
       arr[ rowidx ][ colidx ] = "plain" //initialize all as plain
     } )
   } )
@@ -204,11 +207,11 @@ WorldBoard.prototype.randomizeTerrain = function () {
     this.landTiles[ genMax( y ) ][ genMax( x ) ] = "mountain";
   this.landTiles[ 1 ][ 1 ] = "forest" // make sure player starts in a forest
 }
-WorldBoard.prototype.drawEntireMap = function () {
+WorldBoard.prototype.drawEntireMap = function() {
   //check all land/monster locations, used for debugging
   var self = this;
-  this.landTiles.forEach( function ( row, rowindex ) {
-    row.forEach( function ( tile, colindex ) {
+  this.landTiles.forEach( function( row, rowindex ) {
+    row.forEach( function( tile, colindex ) {
       $( ".fogR" + rowindex + "C" + colindex ).removeClass( "fog" );
       $( ".landR" + rowindex + "C" + colindex ).addClass(
         "background" );
@@ -216,7 +219,7 @@ WorldBoard.prototype.drawEntireMap = function () {
     } )
   } )
 }
-WorldBoard.prototype.randomizeCreatures = function () {
+WorldBoard.prototype.randomizeCreatures = function() {
   //sprite X and Y are in 1-index
 
   for ( creatureType in creatureTypes ) {
@@ -231,13 +234,14 @@ WorldBoard.prototype.randomizeCreatures = function () {
   }
 }
 WorldBoard.prototype.makeACreature =
-  function ( creatureType ) {
+  function( creatureType ) {
     // creates one new creature at position given, if failed, calls 
     // itself recursively
     var movement = creatureTypes[ creatureType ][ 1 ];
     var strength = creatureTypes[ creatureType ][ 2 ];
     var strengthScaled =
-      Math.floor( ( strength - 3 ) * Math.sqrt( this.width * this.height ) / 20 );
+      Math.floor( ( strength - 3 ) * Math.sqrt( this.width * this.height ) /
+        20 );
     if ( strengthScaled >= this.width ) strengthScaled = this.width - 1
     if ( strengthScaled >= this.height ) strengthScaled = this.height - 1
       // prevent it from going outside the map
@@ -252,28 +256,28 @@ WorldBoard.prototype.makeACreature =
       }
     this.makeACreature( creatureType ) //if fail, run makeACreature again
   }
-WorldBoard.prototype.canMoveOnTerrain = function ( movement, terrain ) {
+WorldBoard.prototype.canMoveOnTerrain = function( movement, terrain ) {
   if ( ( movement === "walk" && terrain === "water" ) ) return false;
   if ( ( movement === "fly" && terrain === "forest" ) ) return false;
   return true;
 }
-WorldBoard.prototype.drawCreatures = function () {
+WorldBoard.prototype.drawCreatures = function() {
   //deletes creatures in oldNoFogZone, then draws creatures in noFogZone
   var self = this;
-  this.oldNoFogZone.forEach( function ( ele, ind, arr ) {
+  this.oldNoFogZone.forEach( function( ele, ind, arr ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
     $( ".creatR" + y + "C" + x ).removeClass( "creature" ).removeClass(
       "hunting" );
   } )
-  this.noFogZone.forEach( function ( ele, ind, arr ) {
+  this.noFogZone.forEach( function( ele, ind, arr ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
     self.drawCreature( x, y );
   } )
 
 }
-WorldBoard.prototype.drawCreature = function ( x, y ) {
+WorldBoard.prototype.drawCreature = function( x, y ) {
   // redraws cell at x,y according to if there is a creature in creatureLoc 
   var self = this
   var creature = this.creatureLocs[ y ][ x ]
@@ -295,21 +299,24 @@ WorldBoard.prototype.drawCreature = function ( x, y ) {
   }
   this.ifHuntingAnimate( x, y )
 }
-WorldBoard.prototype.initPlayer = function () {
+WorldBoard.prototype.initPlayer = function() {
   this.creatureLocs[ 1 ][ 1 ] = new Player()
+  player = this.creatureLocs[ 1 ][ 1 ]
+  player.xpToNextLevel = this.getXpNeededForLevel()
   this.updateFog();
   this.updateHealthDisplay();
-  this.updateXpToNextLevel();
   this.updateSkillDisplay();
+  this.updateDefenseDisplay();
+
 }
-WorldBoard.prototype.updateFog = function () {
+WorldBoard.prototype.updateFog = function() {
   var noFogZone = this.calculateNoFogZone( this.playerX, this.playerY )
-  this.landTiles.forEach( function ( row, rowidx ) {
-    row.forEach( function ( tile, colidx ) {
+  this.landTiles.forEach( function( row, rowidx ) {
+    row.forEach( function( tile, colidx ) {
       $( ".fogR" + rowidx + "C" + colidx ).addClass( "fog" );
     } )
   } )
-  noFogZone.forEach( function ( ele ) {
+  noFogZone.forEach( function( ele ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
     $( ".fogR" + y + "C" + x ).removeClass( "fog" )
@@ -319,20 +326,20 @@ WorldBoard.prototype.updateFog = function () {
   this.noFogZone = noFogZone;
   this.drawCreatures();
 }
-WorldBoard.prototype.calculateNoFogZone = function ( playerX, playerY ) {
+WorldBoard.prototype.calculateNoFogZone = function( playerX, playerY ) {
   //calculates a two-cell range around the player location
   //that should be non-foggy
   var self = this
   var noFogCore = this.nearbyCells( playerX, playerY );
   var noFogZone = [];
-  noFogCore.forEach( function ( ele ) {
+  noFogCore.forEach( function( ele ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
     noFogZone = noFogZone.concat( self.nearbyCells( x, y ) )
   } )
   return noFogZone
 }
-WorldBoard.prototype.nearbyCells = function ( x, y ) {
+WorldBoard.prototype.nearbyCells = function( x, y ) {
   //returns array of coords of the six nearby hexes if inside board
   //each coord is [xValue,yValue]
   if ( x < 0 || y < 0 || x >= this.width || y >= this.height ) return false
@@ -346,27 +353,27 @@ WorldBoard.prototype.nearbyCells = function ( x, y ) {
     this.cellInDirection( "SW", x, y ),
     this.cellInDirection( "SE", x, y )
   ]
-  var filteredForOutsideBoard = hexArray.filter( function ( coords ) {
+  var filteredForOutsideBoard = hexArray.filter( function( coords ) {
     return coords[ 0 ] > -1 && coords[ 1 ] > -1 &&
       coords[ 0 ] < self.width && coords[ 1 ] < self.height;
   } )
   return filteredForOutsideBoard;
 }
-WorldBoard.prototype.validMoves = function ( movement, x, y ) {
+WorldBoard.prototype.validMoves = function( movement, x, y ) {
   //checks all grid locations around x,y for valid moves
   //returns an array with each location a pair in an array
   var self = this;
   var cellsToCheck = this.nearbyCells( x, y );
   var validMoves = [];
   if ( movement === "walk" ) {
-    validMoves = cellsToCheck.filter( function ( ele, ind, arr ) {
+    validMoves = cellsToCheck.filter( function( ele, ind, arr ) {
       var x = ele[ 0 ];
       var y = ele[ 1 ];
       return ( self.landTiles[ y ][ x ] !== "water" )
     } )
   }
   if ( movement === "fly" ) {
-    validMoves = cellsToCheck.filter( function ( ele, ind, arr ) {
+    validMoves = cellsToCheck.filter( function( ele, ind, arr ) {
       var x = ele[ 0 ];
       var y = ele[ 1 ];
       return ( self.landTiles[ y ][ x ] !== "forest" )
@@ -374,39 +381,39 @@ WorldBoard.prototype.validMoves = function ( movement, x, y ) {
   }
   return validMoves;
 }
-WorldBoard.prototype.cellInDirection = function ( direction, x, y ) {
+WorldBoard.prototype.cellInDirection = function( direction, x, y ) {
   //returns the coordinates of the cell that is in the direction given
   //x and y inputs are the origin location
   switch ( direction ) {
-  case "E":
-    return [ x + 1, y ];
-    break;
-  case "W":
-    return [ x - 1, y ];
-    break;
-  case "NW":
-    if ( y % 2 === 0 )
-      return [ x, y - 1 ];
-    else return [ x - 1, y - 1 ];
-    break;
-  case "NE":
-    if ( y % 2 === 0 )
-      return [ x + 1, y - 1 ];
-    else return [ x, y - 1 ];
-    break;
-  case "SW":
-    if ( y % 2 === 0 )
-      return [ x, y + 1 ];
-    else return [ x - 1, y + 1 ];
-    break;
-  case "SE":
-    if ( y % 2 === 0 )
-      return [ x + 1, y + 1 ];
-    else return [ x, y + 1 ];
-    break;
+    case "E":
+      return [ x + 1, y ];
+      break;
+    case "W":
+      return [ x - 1, y ];
+      break;
+    case "NW":
+      if ( y % 2 === 0 )
+        return [ x, y - 1 ];
+      else return [ x - 1, y - 1 ];
+      break;
+    case "NE":
+      if ( y % 2 === 0 )
+        return [ x + 1, y - 1 ];
+      else return [ x, y - 1 ];
+      break;
+    case "SW":
+      if ( y % 2 === 0 )
+        return [ x, y + 1 ];
+      else return [ x - 1, y + 1 ];
+      break;
+    case "SE":
+      if ( y % 2 === 0 )
+        return [ x + 1, y + 1 ];
+      else return [ x, y + 1 ];
+      break;
   }
 }
-WorldBoard.prototype.playerMove = function ( direction ) {
+WorldBoard.prototype.playerMove = function( direction ) {
   //checks if player can move to cell in direction, and if so moves him
   //need to update this.playerX, this.playerY, and creatureLocs as well
   //returns true if an action was performed(move or attack)
@@ -424,7 +431,7 @@ WorldBoard.prototype.playerMove = function ( direction ) {
   var player = this.creatureLocs[ y ][ x ];
   var validMoves = this.validMoves( player.movement, x, y );
   var isMoveValid = false;
-  validMoves.forEach( function ( ele ) {
+  validMoves.forEach( function( ele ) {
     if ( targetX === ele[ 0 ] && targetY === ele[ 1 ] ) {
       isMoveValid = true;
     }
@@ -438,6 +445,7 @@ WorldBoard.prototype.playerMove = function ( direction ) {
     this.drawCreature( x, y ); // clear old cell
     this.drawCreature( targetX, targetY ); // draw at new cell
     this.updateFog( targetX, targetY );
+    this.updateDefenseDisplay();
     this.enemyTurn();
     return true;
   }
@@ -448,11 +456,11 @@ WorldBoard.prototype.playerMove = function ( direction ) {
   }
   return false;
 }
-WorldBoard.prototype.shout = function () {
+WorldBoard.prototype.shout = function() {
   console.log( "Player shouts, causing nearby enemies to give chase!" )
   var self = this;
   nearCells = this.nearbyCells( this.playerX, this.playerY )
-  nearCells.forEach( function ( location ) {
+  nearCells.forEach( function( location ) {
     var x = location[ 0 ];
     var y = location[ 1 ];
     self.activateNearbyEnemies( self, x, y );
@@ -460,9 +468,9 @@ WorldBoard.prototype.shout = function () {
   this.updateFog( this.playerX, this.playerY );
   this.enemyTurn();
 }
-WorldBoard.prototype.activateNearbyEnemies = function ( self, x, y ) {
+WorldBoard.prototype.activateNearbyEnemies = function( self, x, y ) {
   var nearCells = this.nearbyCells( x, y );
-  nearCells.forEach( function ( ele, ind, arr ) {
+  nearCells.forEach( function( ele, ind, arr ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
     var creature = self.creatureLocs[ y ][ x ]
@@ -472,35 +480,36 @@ WorldBoard.prototype.activateNearbyEnemies = function ( self, x, y ) {
     }
   } )
 }
-WorldBoard.prototype.ifHuntingAnimate = function ( x, y ) {
+WorldBoard.prototype.ifHuntingAnimate = function( x, y ) {
   var creature = this.creatureLocs[ y ][ x ]
   if ( creature && creature.isHunting === true )
-    $( ".creatR" + y + "C" + x ).removeClass( "waiting" ).addClass( "hunting" )
+    $( ".creatR" + y + "C" + x ).removeClass( "waiting" ).addClass(
+      "hunting" )
 }
-WorldBoard.prototype.enemyTurn = function () {
+WorldBoard.prototype.enemyTurn = function() {
   var self = this;
-  this.creatureLocs.forEach( function ( row, y ) {
-    row.forEach( function ( creature, x ) {
+  this.creatureLocs.forEach( function( row, y ) {
+    row.forEach( function( creature, x ) {
       if ( creature && creature.isHunting === true && creature.justMoved ===
         false ) {
         self.runEnemyAI( x, y )
       }
     } )
   } )
-  this.creatureLocs.forEach( function ( row, y ) {
-    row.forEach( function ( creature, x ) {
+  this.creatureLocs.forEach( function( row, y ) {
+    row.forEach( function( creature, x ) {
       if ( creature ) creature.justMoved = false;
       // reset moved status for all creatures.
     } )
   } )
 }
-WorldBoard.prototype.runEnemyAI = function ( attackerX, attackerY ) {
+WorldBoard.prototype.runEnemyAI = function( attackerX, attackerY ) {
   //every enemy that isHunting either moves towards player or attacks player
   enemy = this.creatureLocs[ attackerY ][ attackerX ];
   nearCells = this.nearbyCells( attackerX, attackerY );
   var self = this;
   var withinRange = false;
-  nearCells.forEach( function ( ele ) {
+  nearCells.forEach( function( ele ) {
     var cellX = ele[ 0 ];
     var cellY = ele[ 1 ];
     if ( self.playerX === cellX && self.playerY === cellY ) {
@@ -512,7 +521,7 @@ WorldBoard.prototype.runEnemyAI = function ( attackerX, attackerY ) {
     this.moveTowardsPlayer( attackerX, attackerY );
   }
 }
-WorldBoard.prototype.attackOnPlayer = function ( x, y ) {
+WorldBoard.prototype.attackOnPlayer = function( x, y ) {
   //arguments are for attacker position
   var attacker = this.creatureLocs[ y ][ x ];
   var player = this.creatureLocs[ this.playerY ][ this.playerX ];
@@ -534,14 +543,14 @@ WorldBoard.prototype.attackOnPlayer = function ( x, y ) {
     this.drawCreature( this.playerY, this.playerX )
   }
 }
-WorldBoard.prototype.updateHealthDisplay = function () {
+WorldBoard.prototype.updateHealthDisplay = function() {
   var player = this.creatureLocs[ this.playerY ][ this.playerX ]
   var healthFraction = player.health / player.maxHealth
   var firePosition = healthFraction * 2
   $( ".health" ).css( "background-position", "0px -" + firePosition + "em" )
     .text( "Vitality: " + player.health + "/" + player.maxHealth )
 }
-WorldBoard.prototype.attackByPlayer = function ( player, targetX, targetY ) {
+WorldBoard.prototype.attackByPlayer = function( player, targetX, targetY ) {
   var self = this
   var enemy = this.creatureLocs[ targetY ][ targetX ];
   this.activateNearbyEnemies( self, this.playerX, this.playerY );
@@ -549,7 +558,8 @@ WorldBoard.prototype.attackByPlayer = function ( player, targetX, targetY ) {
   var terrainDefenseMod = terrainDefenseVals[ enemyTerrain ];
   var strengthCompare =
     minZero( player.strength - ( 0.5 * enemy.strength * terrainDefenseMod ) );
-  console.log( "strength comparison when creature attacked:", strengthCompare )
+  console.log( "strength comparison when creature attacked:",
+    strengthCompare )
   var damageDone = ( genMax( strengthCompare + 2 ) );
   this.creatureLocs[ targetY ][ targetX ].health -= damageDone;
   console.log( "damage done to enemy:", damageDone );
@@ -562,16 +572,17 @@ WorldBoard.prototype.attackByPlayer = function ( player, targetX, targetY ) {
     player.gold += goldDrop;
     console.log( "The sojourner now has", player.gold, "gold coins." )
     player.xp += Math.floor( 10 * ( enemy.strength * this.xpScale ) )
-    this.updatePlayerLevel( player )
+    this.checkForLevelUp( player )
     this.creatureLocs[ targetY ][ targetX ] = null;
     this.drawCreature( targetX, targetY )
     this.updateSkillDisplay();
   }
 }
-WorldBoard.prototype.updatePlayerLevel = function ( player ) {
-  var nextLevelXp = 30 * factorial( player.strength );
-  this.updateXpToNextLevel();
-  if ( player.xp > nextLevelXp ) {
+WorldBoard.prototype.checkForLevelUp = function( player ) {
+  console.log( "player.xp", player.xp )
+  console.log( "player.xpToNextLevel", player.xpToNextLevel )
+  if ( player.xp > player.xpToNextLevel ) {
+
     console.log(
       "The sojourner has become stronger through combat experience!" );
     player.strength += 1;
@@ -582,19 +593,21 @@ WorldBoard.prototype.updatePlayerLevel = function ( player ) {
       "The breakthrough recovers half of the sojourner's lost vitality; he heals for ",
       healing, "points" )
     player.health += healing;
+    player.xpPrevLevel = player.xpToNextLevel
+    player.xpToNextLevel = this.getXpNeededForLevel( player.strength )
     this.updateHealthDisplay();
     this.updateSkillDisplay();
   }
 }
-WorldBoard.prototype.updateXpToNextLevel = function () {
-  var player = this.creatureLocs[ this.playerY ][ this.playerX ];
-  player.xpToNextLevel = 30 * factorial( player.strength );
+WorldBoard.prototype.getXpNeededForLevel = function( strength ) {
+  return 30 * factorial( strength )
 }
-WorldBoard.prototype.updateSkillDisplay = function () {
+WorldBoard.prototype.updateSkillDisplay = function() {
   var player = this.creatureLocs[ this.playerY ][ this.playerX ];
   firstColor = parseInt( 255 - ( 255 * player.strength / 20 ) );
   secondColor = parseInt( 255 * player.strength / 20 );
-  xpFraction = 1 - ( player.xpToNextLevel - player.xp ) / player.xpToNextLevel;
+  xpFraction = ( player.xp - player.xpPrevLevel ) / player.xpToNextLevel
+  console.log( "xpFraction", xpFraction )
   xpBkgrndPosition = 1.6 - ( 1.6 * xpFraction );
   gradientString = "linear-gradient(rgba(255,255," +
     firstColor + ",1),rgba(0,0," + secondColor + ",1))"
@@ -603,10 +616,32 @@ WorldBoard.prototype.updateSkillDisplay = function () {
   $( ".strength" ).css( "background", gradientString )
   $( ".strength" ).css( "background-position", bkString )
 }
-WorldBoard.prototype.updateDefenseDisplay = function () {
-  var location
+WorldBoard.prototype.updateDefenseDisplay = function() {
+  var location = this.landTiles[ this.playerY ][ this.playerX ]
+  var defenseColor, defenseString
+  switch ( location ) {
+    case "plain":
+      defenseString = "Plains - normal defense"
+      defenseColor = "green"
+      break
+    case "mountain":
+      defenseString = "Mountains - great defense"
+      defenseColor = "blue"
+      break
+    case "forest":
+      defenseString = "Forest - good defense"
+      defenseColor = "purple"
+      break
+    case "swamp":
+      defenseString = "Swamp - poor defense"
+      defenseColor = "red"
+      break
+  }
+  console.log( defenseString, defenseColor )
+  $( ".defense" ).text( defenseString )
+  $( ".defense" ).css( "backgroundColor", defenseColor )
 }
-WorldBoard.prototype.moveTowardsPlayer = function ( x, y ) {
+WorldBoard.prototype.moveTowardsPlayer = function( x, y ) {
   //parameters are coordinates for creature location
   var moveChoice = "";
   var xDiff = x - this.playerX;

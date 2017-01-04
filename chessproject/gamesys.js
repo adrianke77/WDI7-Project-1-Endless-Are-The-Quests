@@ -72,9 +72,9 @@ GameSys.prototype.newgame = function() {
   this.player = "W"
   this.gameState = "waitForPick"
   board = new Board
-  // board.fillStartingBoard("randomAll")
+  board.fillStartingBoard("randomAll")
   // board.fillStartingBoard("randomPositions")
-  board.fillStartingBoard("randomPieces")
+  // board.fillStartingBoard("randomPieces")
   // board.fillStartingBoard("normal")
   // choose from randomAll, randomPositions, randomPieces or normal
   this.drawLayoutToHtml()
