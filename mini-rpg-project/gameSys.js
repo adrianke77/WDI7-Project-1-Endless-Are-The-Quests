@@ -4,6 +4,7 @@ function GameSys() {
   this.windowStartWidth = $( window ).width()
   this.startFontHeight = 0
   this.windowScale = 0
+  var self = this
 }
 GameSys.prototype.initNumbSeedFromString = function( string ) {
   // returns a number betwen 0 and 1 that will always generate for the string
@@ -65,8 +66,8 @@ GameSys.prototype.makeFixedDisplays = function() {
   healthDisplay.addClass( "health display" )
   strengthDisplay.addClass( "strength display" )
   defenseDisplay.addClass( "defense display" )
-  var displays = $("<div></div>");
-  displays.append(healthDisplay,strengthDisplay,defenseDisplay)
+  var displays = $( "<div></div>" );
+  displays.append( healthDisplay, strengthDisplay, defenseDisplay )
   $( "body" ).append( displays )
   $( ".health" ).text( " Vitality" )
   $( ".strength" ).text( " Skill" )
@@ -75,33 +76,53 @@ GameSys.prototype.makeFixedDisplays = function() {
   $( ".display" ).css( "font-size", this.startFontHeight );
 }
 GameSys.prototype.resizeInfoDisplay = function( event ) {
-  var self = event.data.self
+  if ( typeof event !== "undefined" ) self = event.data.self;
+  else
+    self = this
   this.windowScale = $( window ).width() / self.windowStartWidth;
   var adjustedFontSize = self.startFontHeight * this.windowScale;
   $( ".display" ).css( "font-size", adjustedFontSize );
 }
-GameSys.prototype.resetGame = function() {
+GameSys.prototype.resetGame = function( startString ) {
   $( ".gameBoard" ).remove();
-  var width, height, string;
-  width = 30;
-  height = 30;
-  string = "moocow";
+  var width, height
+  width = 20;
+  height = 20;
   var worldBoard = new WorldBoard( width, height );
-  gameSys.initNumbSeedFromString( string );
+  gameSys.initNumbSeedFromString( startString );
   worldBoard.makeBlankBoardHtml();
   worldBoard.randomizeTerrain();
   worldBoard.drawTerrain();
   gameSys.makeKeypressListeners( worldBoard );
   gameSys.makeZoomListener();
   gameSys.makeFixedDisplays();
+  gameSys.resizeInfoDisplay();
   worldBoard.initPlayer();
   worldBoard.randomizeCreatures();
   worldBoard.drawCreatures();
   //testing
   // worldBoard.drawEntireMap() //debug only, turn off when playing
 }
+GameSys.prototype.makeStartListener = function() {
+  $( ".startbutton" ).click( {
+    self: this
+  }, this.startGame );
+}
+GameSys.prototype.startGame = function( event ) {
+  self = event.data.self
+  $( ".startbutton" ).addClass( "hidden" )
+  $( ".textstring" ).removeClass( "hidden" )
+  $( ".startgame" ).removeClass( "hidden" )
+    .on( "click", function() {
+      console.log( "startgame clicked" )
+      var startString = $( ".textstring" ).val()
+      $( ".startmenu" ).addClass( "hidden" )
+      self.resetGame( startString )
+    } )
+}
 
 //MAIN CODE
 
-var gameSys = new GameSys();
-gameSys.resetGame();
+var gameSys = new GameSys()
+$( window ).css( "zoom", "100%" )
+gameSys.makeStartListener();

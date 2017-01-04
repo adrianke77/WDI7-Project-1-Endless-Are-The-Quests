@@ -18,8 +18,8 @@ body{
   position    : relative;
   height      : 100%;
   width       : 100%;
-  margin-top  : 50px;
-  margin-left : 30px;
+  margin-top  : 80px;
+  margin-left : 60px;
 }
 .background {
   z-index         : -10;
@@ -80,37 +80,133 @@ body{
 }
 .health {
   bottom              : 5%;
-  left                : 10%;
+  left                : 8%;
   background          : url('./art/fire2.gif') no-repeat;
   background-position : 0px -2em;
   background-size     : 100% 250%;
   text-shadow         : black 0 0 0.2em ;
 }
 .strength {
-  bottom          : 5%;
-  left            : 43%;
-  background      : linear-gradient( rgba(255,255,255,1),rgba(0,0,0,1));
-  background-size : 100% 100%;
-  background-position: 0 1.6em;
+  bottom              : 5%;
+  left                : 38%;
+  background          : linear-gradient( rgba(255,255,255,1),rgba(0,0,0,1));
+  background-position : 0 1.6em;
+  background-size     : 100% 100%;
 }
 .defense {
-  right  : 5%;
+  right  : 7%;
   bottom : 5%;
+  text-align: center;
+  width: 10em;
 }
 .waiting {
-  animation : bounce 2s ease infinite;
+  animation       : bounce 2s ease infinite;
+  animation-delay : 0.5s;
 }
 .hunting {
-  animation : bounce 0.5s ease infinite;
+  animation : bounce 0.4s ease infinite;
 }
-
 @keyframes bounce {
+  0% {margin-top : 3.5px;}
+  50% {margin-top : 6.5px;}
+  100% {margin-top : 3.5px;}
+}
+.popup {
+  animation : riseandfade 3s linear forwards;
+}
+@keyframes riseandfade {
   0% {
-    margin-top : 3.5px;
-  }
-  50% {
-    margin-top : 6.5px;
+    margin-bottom : 0px;
+    opacity       : 1;
   }
   100% {
-    margin-top : 3.5px;
+    margin-bottom : 40px;
+    opacity       : 0;
   }
+}
+.drawin {
+  animation : fadein 1s linear forwards;
+}
+.slowdrawin {
+  animation : fadein 5s linear forwards;
+}
+.fadeout {
+  animation : fadein 1s linear reverse;
+}
+  @keyframes fadein {
+    0% { opacity: 0 }
+    100% {opacity: 1}
+}
+
+.vtfont {
+  font-family   : 'VT323', monospace;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.levelup {
+  z-index: 50;
+  background: url('./art/levelup.gif') no-repeat;
+  background-position: -15px -10px;
+  background-size: contain;
+  height: 200%;
+  width: 200%;
+  opacity: 0.50;
+}
+
+.startmenu {
+  color: green ;
+  text-shadow: black 0 0 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background: url('./art/victory.gif') no-repeat;
+  background-size: auto 100%  ;
+  background-position: center;
+  font-size: 6em;
+  font-family   : 'VT323', monospace;
+  line-height: 0.1em;
+  padding: 0
+}
+
+.startbutton {
+  background: linear-gradient(45deg,darkgreen,lightgreen);
+  margin-top: 3em;
+  height: 2em;
+  width: 5em;
+  border-radius: 0.5em;
+  padding: 0;
+  font-family   : 'VT323', monospace;
+  font-size: 0.5em;
+}
+
+.textstring {
+  text-align: center;
+  border-radius: 0.3em;
+  margin-top: 1em;
+  height: 2em;
+  width: 15em;
+  font-family   : 'VT323', monospace;
+  font-size: 0.5em;
+}
+
+.startgame {
+  margin-top: 1em;
+  background: radial-gradient(red,yellow);
+  margin-top: 3em;
+  height: 2em;
+  width: 10em;
+  border-radius: 0.5em;
+  padding: 0;
+  font-family   : 'VT323', monospace;
+  font-size: 0.5em;
+}
+
+h1,h3 {
+  margin: 0.2em;
+  padding: 0.1em;
+}

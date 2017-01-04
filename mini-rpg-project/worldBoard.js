@@ -3,6 +3,9 @@
 
 const DisplayFontScale = 30 // the bigger the nunmber the smaller the display font size
 
+const shouts = [ "COME GET SOME!", "GET OVER HERE!",
+  "GETCHA FREE DEATHS HERE!" ]
+
 const landTilesCoords = {
   plain: [ 0, 0 ],
   swamp: [ -36, 0 ],
@@ -47,8 +50,8 @@ const terrainDefenseVals = {
   plain: 1,
   swamp: 0.8,
   water: 1,
-  mountain: 1.2,
-  forest: 1.1
+  mountain: 1.5,
+  forest: 1.25
 }
 
 var numbSeed = 0
@@ -94,8 +97,8 @@ function factorial( number ) {
 //PLAYER CONSTRUCTOR
 function Player() {
   this.type = "player"
-  this.health = 20
-  this.maxHealth = 20
+  this.health = 15
+  this.maxHealth = 15
   this.movement = "walk"
   this.strength = 3
   this.speed = 1
@@ -151,7 +154,7 @@ WorldBoard.prototype.makeBlankBoardHtml = function() {
       creatureCell.addClass( "creatbox creatR" + rowidx + "C" +
         colidx + " waiting" );
       fogCell.addClass( "fogbox fogR" + rowidx + "C" + colidx +
-        " fog" );
+        " fog drawin" );
       var rowshift =
         rowidx % 2 === 0 ? 15 : 0;
       var topPos = 24 * rowidx;
@@ -179,8 +182,8 @@ WorldBoard.prototype.drawTerrain = function() {
       var xpos = landTilesCoords[ tile ][ 0 ];
       var ypos = landTilesCoords[ tile ][ 1 ];
       var posString = xpos + "px " + ypos + "px";
-      $( ".landR" + rowidx + "C" + colidx ).css(
-        "background-position", posString );
+      $( " .landR" + rowidx + "C" + colidx )
+        .css( "background-position", posString )
     } );
   } );
 }
@@ -295,14 +298,14 @@ WorldBoard.prototype.drawCreature = function( x, y ) {
     var terrainHere = self.landTiles[ y ][ x ];
     $( ".creatR" + y + "C" + x )
       .addClass( "creature" )
-      .css( "background-position", posString );
+      .css( "background-position", posString )
   }
   this.ifHuntingAnimate( x, y )
 }
 WorldBoard.prototype.initPlayer = function() {
   this.creatureLocs[ 1 ][ 1 ] = new Player()
   player = this.creatureLocs[ 1 ][ 1 ]
-  player.xpToNextLevel = this.getXpNeededForLevel()
+  player.xpToNextLevel = this.getXpNeededForLevel( 3 )
   this.updateFog();
   this.updateHealthDisplay();
   this.updateSkillDisplay();
@@ -320,7 +323,8 @@ WorldBoard.prototype.updateFog = function() {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
     $( ".fogR" + y + "C" + x ).removeClass( "fog" )
-    $( ".landR" + y + "C" + x ).addClass( "background" )
+    $( ".landR" + y + "C" + x ).addClass( "background" ).addClass(
+      "drawin" )
   } )
   this.oldNoFogZone = this.noFogZone
   this.noFogZone = noFogZone;
@@ -416,7 +420,7 @@ WorldBoard.prototype.cellInDirection = function( direction, x, y ) {
 WorldBoard.prototype.playerMove = function( direction ) {
   //checks if player can move to cell in direction, and if so moves him
   //need to update this.playerX, this.playerY, and creatureLocs as well
-  //returns true if an action was performed(move or attack)
+  //returns true if an action was performed(move or attack))'
   var self = this
   var x = this.playerX;
   var y = this.playerY;
@@ -457,7 +461,8 @@ WorldBoard.prototype.playerMove = function( direction ) {
   return false;
 }
 WorldBoard.prototype.shout = function() {
-  console.log( "Player shouts, causing nearby enemies to give chase!" )
+  shoutChoice = shouts[ Math.floor( Math.random() * shouts.length ) ]
+  this.popup( shoutChoice, 0.5, "white", this.playerX, this.playerY )
   var self = this;
   nearCells = this.nearbyCells( this.playerX, this.playerY )
   nearCells.forEach( function( location ) {
@@ -468,18 +473,75 @@ WorldBoard.prototype.shout = function() {
   this.updateFog( this.playerX, this.playerY );
   this.enemyTurn();
 }
-WorldBoard.prototype.activateNearbyEnemies = function( self, x, y ) {
-  var nearCells = this.nearbyCells( x, y );
+WorldBoard.prototype.activateNearbyEnemies = function( self, inputx, inputy ) {
+  var nearCells = this.nearbyCells( inputx, inputy );
   nearCells.forEach( function( ele, ind, arr ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
     var creature = self.creatureLocs[ y ][ x ]
     if ( creature && creature.type !== "player" ) {
+      if ( creature.isHunting === false )
+        self.creatureAlertedPopup( x, y )
       self.creatureLocs[ y ][ x ].isHunting = true;
       self.ifHuntingAnimate( x, y );
+
     }
   } )
 }
+WorldBoard.prototype.popup = function( string, fontsize, color, x, y ) {
+  var popupDiv = $( "<div></div>" );
+  var popupName = "popup" + x + y
+  popupDiv.text( string ).addClass( "atfront vtfont " + popupName )
+    .css( {
+      "color": color,
+      "position": "absolute",
+      "font-size": "0.4em",
+      "width": "30px",
+      "text-shadow": "black 0 0 0.25em"
+    } )
+  if ( !$( "." + popupName )[ 0 ] )
+    this.makeRisingFadingDiv( x, y, popupDiv )
+  else
+    $( "." + popupName ).stop().append( "</br>" + string )
+    .css( "opacity", "1" )
+    .animate( {
+      opacity: 0,
+      bottom: "40px",
+    }, 3000, "linear", function() {
+      $( "." + popupName ).remove().css( "opacity", "1" )
+    } )
+}
+
+WorldBoard.prototype.creatureAlertedPopup = function( x, y ) {
+  var popupDiv = $( "<div></div>" );
+  var popupName = "exclaimX" + x + "Y" + y;
+  popupDiv.text( "!" ).addClass( "atfront vtfont " + popupName )
+    .css( {
+      "color": "red",
+      "position": "absolute",
+      "font-size": "2em",
+      "width": "80px",
+      "text-shadow": "black 0 0 0.5em"
+    } );
+  $( ".fogR" + y + "C" + x ).append( popupDiv );
+  popupDiv.animate( {
+    opacity: 0.5,
+    bottom: "40px",
+  }, 1000, "linear", function() {
+    $( "." + popupName ).remove().css( "opacity", "1" )
+  } )
+}
+WorldBoard.prototype.makeRisingFadingDiv =
+  function( x, y, popupDiv, counter ) {
+    var popupName = "popup" + x + y
+    $( ".fogR" + y + "C" + x ).append( popupDiv )
+    popupDiv.animate( {
+      opacity: 0.5,
+      bottom: "40px",
+    }, 3000, "linear", function() {
+      $( "." + popupName ).remove().css( "opacity", "1" )
+    } )
+  }
 WorldBoard.prototype.ifHuntingAnimate = function( x, y ) {
   var creature = this.creatureLocs[ y ][ x ]
   if ( creature && creature.isHunting === true )
@@ -528,13 +590,18 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
   var playerTerrain = this.landTiles[ this.playerY ][ this.playerX ];
   var terrainDefenseMod = terrainDefenseVals[ playerTerrain ];
   var strengthCompare =
-    minZero( attacker.strength - ( 0.5 * player.strength * terrainDefenseMod ) );
-  console.log( "strength comparison when player attacked is ",
-    strengthCompare );
-  damageDone = minZero( genMax( strengthCompare + 1 ) );
+    minZero( attacker.strength - ( 0.5 * player.strength *
+      terrainDefenseMod ) );
+  var damageDone = minZero( genMax( strengthCompare + 1 ) );
   this.creatureLocs[ this.playerY ][ this.playerX ].health -= damageDone;
-  console.log( "damage done to player:", damageDone );
-  console.log( "player health:", player.health );
+  var damageString = ""
+  if ( damageDone === 0 )
+    damageString = attacker.type + " misses!"
+  else
+    damageString = attacker.type + " hits, " + damageDone + " damage!";
+  damageString = damageString.charAt( 0 ).toUpperCase() +
+    damageString.slice( 1, damageString.length )
+  this.popup( damageString, 0.5, "white", this.playerX, this.playerY )
   this.updateHealthDisplay();
   if ( player.health <= 0 ) {
     console.log( "the player has died!!!" )
@@ -543,13 +610,6 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
     this.drawCreature( this.playerY, this.playerX )
   }
 }
-WorldBoard.prototype.updateHealthDisplay = function() {
-  var player = this.creatureLocs[ this.playerY ][ this.playerX ]
-  var healthFraction = player.health / player.maxHealth
-  var firePosition = healthFraction * 2
-  $( ".health" ).css( "background-position", "0px -" + firePosition + "em" )
-    .text( "Vitality: " + player.health + "/" + player.maxHealth )
-}
 WorldBoard.prototype.attackByPlayer = function( player, targetX, targetY ) {
   var self = this
   var enemy = this.creatureLocs[ targetY ][ targetX ];
@@ -557,20 +617,20 @@ WorldBoard.prototype.attackByPlayer = function( player, targetX, targetY ) {
   var enemyTerrain = this.landTiles[ targetY ][ targetX ];
   var terrainDefenseMod = terrainDefenseVals[ enemyTerrain ];
   var strengthCompare =
-    minZero( player.strength - ( 0.5 * enemy.strength * terrainDefenseMod ) );
-  console.log( "strength comparison when creature attacked:",
-    strengthCompare )
+    minZero( player.strength - ( 0.5 * enemy.strength *
+      terrainDefenseMod ) );
+  var damageString = ""
   var damageDone = ( genMax( strengthCompare + 2 ) );
+  if ( damageDone === 0 )
+    damageString = "Player misses!"
+  else
+    damageString = "Player hits, " + damageDone + " damage!";
+  this.popup( damageString, 0.5, "white", targetX, targetY )
   this.creatureLocs[ targetY ][ targetX ].health -= damageDone;
-  console.log( "damage done to enemy:", damageDone );
-  console.log( "enemy health:", enemy.health );
   if ( enemy.health <= 0 ) {
-    console.log( enemy.type, "has succumbed to its wounds and collapsed." );
-    console.log( "treasure calc: ", enemy.treasureMin, enemy.treasureMax )
+    this.popup( "The creature is defeated!", 0.5, "white", targetX, targetY )
     var goldDrop = genRange( enemy.treasureMin, enemy.treasureMax );
-    console.log( enemy.type, "has", goldDrop, "gold pieces on its body" );
     player.gold += goldDrop;
-    console.log( "The sojourner now has", player.gold, "gold coins." )
     player.xp += Math.floor( 10 * ( enemy.strength * this.xpScale ) )
     this.checkForLevelUp( player )
     this.creatureLocs[ targetY ][ targetX ] = null;
@@ -578,36 +638,44 @@ WorldBoard.prototype.attackByPlayer = function( player, targetX, targetY ) {
     this.updateSkillDisplay();
   }
 }
+WorldBoard.prototype.updateHealthDisplay = function() {
+  var player = this.creatureLocs[ this.playerY ][ this.playerX ]
+  var healthFraction = player.health / player.maxHealth
+  var firePosition = healthFraction * 2
+  $( ".health" ).css( "background-position", "0px -" + firePosition +
+      "em" )
+    .text( "Vitality: " + player.health + "/" + player.maxHealth )
+}
 WorldBoard.prototype.checkForLevelUp = function( player ) {
-  console.log( "player.xp", player.xp )
-  console.log( "player.xpToNextLevel", player.xpToNextLevel )
   if ( player.xp > player.xpToNextLevel ) {
-
-    console.log(
-      "The sojourner has become stronger through combat experience!" );
     player.strength += 1;
-    console.log( "The sojourner's strength is now", player.strength )
-    player.maxHealth += 5;
+    player.maxHealth += 4;
     var healing = Math.floor( ( player.maxHealth - player.health ) / 2 )
-    console.log(
-      "The breakthrough recovers half of the sojourner's lost vitality; he heals for ",
-      healing, "points" )
     player.health += healing;
     player.xpPrevLevel = player.xpToNextLevel
     player.xpToNextLevel = this.getXpNeededForLevel( player.strength )
     this.updateHealthDisplay();
     this.updateSkillDisplay();
+    var fireDiv = $( "<div></div>" )
+    var backgroundValue = "url('./art/fire2.gif') no-repeat"
+    fireDiv.addClass( "levelup" )
+    $( ".fogR" + this.playerY + "C" + this.playerX ).append( fireDiv )
+    fireDiv.animate( {
+      opacity: 1
+    }, 2500, "linear", function() {
+      $( ".levelup" ).remove()
+    } )
+
   }
 }
 WorldBoard.prototype.getXpNeededForLevel = function( strength ) {
-  return 30 * factorial( strength )
+  return 60 * factorial( strength )
 }
 WorldBoard.prototype.updateSkillDisplay = function() {
   var player = this.creatureLocs[ this.playerY ][ this.playerX ];
   firstColor = parseInt( 255 - ( 255 * player.strength / 20 ) );
   secondColor = parseInt( 255 * player.strength / 20 );
   xpFraction = ( player.xp - player.xpPrevLevel ) / player.xpToNextLevel
-  console.log( "xpFraction", xpFraction )
   xpBkgrndPosition = 1.6 - ( 1.6 * xpFraction );
   gradientString = "linear-gradient(rgba(255,255," +
     firstColor + ",1),rgba(0,0," + secondColor + ",1))"
@@ -637,7 +705,6 @@ WorldBoard.prototype.updateDefenseDisplay = function() {
       defenseColor = "red"
       break
   }
-  console.log( defenseString, defenseColor )
   $( ".defense" ).text( defenseString )
   $( ".defense" ).css( "backgroundColor", defenseColor )
 }
@@ -661,7 +728,8 @@ WorldBoard.prototype.moveTowardsPlayer = function( x, y ) {
     this.width )
     if ( !this.creatureLocs[ targetY ][ targetX ] )
       if ( this.canMoveOnTerrain( movement, targetTerrain ) ) {
-        this.creatureLocs[ targetY ][ targetX ] = this.creatureLocs[ y ][
+        this.creatureLocs[ targetY ][ targetX ] = this.creatureLocs[ y ]
+              [
               x ];
         this.creatureLocs[ targetY ][ targetX ].justMoved = true;
         this.creatureLocs[ y ][ x ] = null;
