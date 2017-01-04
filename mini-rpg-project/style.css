@@ -1,37 +1,46 @@
 
 html,body {
   box-sizing : border-box;
+
   height     : 100%;
   width      : 100%;
   margin     : 0;
   padding    : 0;
 }
+
 body{
+  position        : relative;
   display         : flex;
+
   height          : 100%;
   width           : 100%;
+
   flex-direction  : row;
   justify-content : center;
   align-items     : center;
 }
+
 .gameBoard {
-  position    : relative;
-  height      : 100%;
-  width       : 100%;
-  margin-top  : 80px;
-  margin-left : 60px;
+  position : absolute;
+  top      : 10%;
+  left     : 10%;
 }
+
 .background {
   z-index         : -10;
+
   background      : url('./art/landhextiles-modded3.png') no-repeat;
   background-size : 340% 286%;
 }
+
 .creature {
   background      : url('./art/creatures-modded.png');
   background-size : 900% 700%;
 }
+
 .creatbox {
   position      : absolute;
+
   height        : 20px;
   width         : 20px;
   margin-top    : 7.3px;
@@ -39,8 +48,10 @@ body{
   margin-bottom : 7.3px;
   margin-left   : 5px;
 }
+
 .landbox {
   position : absolute;
+
   height   : 34.6px;
   width    : 30px;
   /*
@@ -55,22 +66,29 @@ body{
   0 -66px
   */
 }
+
 .fogbox {
   position : absolute;
+
   height   : 34.6px;
   width    : 30px;
 }
+
 .fog {
   position            : absolute;
+
   background          : url('./art/landhextiles-modded3.png') no-repeat;
   background-position : 0px -66px;
   background-size     : 340% 286%;
 }
+
 .display{
   position      : fixed;
   z-index       : 10;
+
   width         : auto;
   padding       : 1%;
+
   font-family   : 'VT323', monospace;
   font-weight   : bold ;
   color         : rgba(255,255,255,0.8);
@@ -78,42 +96,56 @@ body{
   border        : 0.1em solid rgba(0,0,0,0.8);
   border-radius : 0.5em;
 }
+
 .health {
   bottom              : 5%;
   left                : 8%;
+
   background          : url('./art/fire2.gif') no-repeat;
   background-position : 0px -2em;
   background-size     : 100% 250%;
   text-shadow         : black 0 0 0.2em ;
 }
+
 .strength {
   bottom              : 5%;
   left                : 38%;
+
   background          : linear-gradient( rgba(255,255,255,1),rgba(0,0,0,1));
   background-position : 0 1.6em;
   background-size     : 100% 100%;
 }
+
 .defense {
-  right  : 7%;
-  bottom : 5%;
-  text-align: center;
-  width: 10em;
+  right      : 7%;
+  bottom     : 5%;
+
+  width      : 10em;
+
+  text-align : center;
 }
+
 .waiting {
   animation       : bounce 2s ease infinite;
   animation-delay : 0.5s;
 }
+
 .hunting {
   animation : bounce 0.4s ease infinite;
 }
+
 @keyframes bounce {
   0% {margin-top : 3.5px;}
+
   50% {margin-top : 6.5px;}
+
   100% {margin-top : 3.5px;}
 }
+
 .popup {
   animation : riseandfade 3s linear forwards;
 }
+
 @keyframes riseandfade {
   0% {
     margin-bottom : 0px;
@@ -124,89 +156,112 @@ body{
     opacity       : 0;
   }
 }
+
 .drawin {
   animation : fadein 1s linear forwards;
 }
-.slowdrawin {
+
+.slowappear {
   animation : fadein 5s linear forwards;
 }
+
 .fadeout {
   animation : fadein 1s linear reverse;
 }
-  @keyframes fadein {
-    0% { opacity: 0 }
-    100% {opacity: 1}
+
+@keyframes fadein {
+  0% { opacity: 0 }
+  100% {opacity: 1}
 }
 
 .vtfont {
-  font-family   : 'VT323', monospace;
+  font-family : 'VT323', monospace;
 }
 
 .hidden {
-  display: none !important;
+  display : none !important;
 }
 
 .levelup {
-  z-index: 50;
-  background: url('./art/levelup.gif') no-repeat;
-  background-position: -15px -10px;
-  background-size: contain;
-  height: 200%;
-  width: 200%;
-  opacity: 0.50;
+  z-index             : 50;
+
+  height              : 200%;
+  width               : 200%;
+
+  background          : url('./art/levelup.gif') no-repeat;
+  background-position : -15px -10px;
+  background-size     : contain;
+
+  animation           : pulse 3s linear forwards;
+}
+
+@keyframes pulse {
+  0% { opacity: 0 }
+
+  50% {opacity: 1}
+
+  100%{opacity:0}
 }
 
 .startmenu {
-  color: green ;
-  text-shadow: black 0 0 0.5em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  background: url('./art/victory.gif') no-repeat;
-  background-size: auto 100%  ;
-  background-position: center;
-  font-size: 6em;
-  font-family   : 'VT323', monospace;
-  line-height: 0.1em;
-  padding: 0
+  display             : flex;
+
+  height              : 100%;
+  width               : 100%;
+  padding             : 0;
+
+  background          : url('./art/victory.gif') no-repeat;
+  background-position : center;
+  background-size     : auto 100%  ;
+  font-family         : 'VT323', monospace;
+  font-size           : 6em;
+  color               : black;
+  line-height         : 0.1em;
+  text-shadow         : white 0.1em 0.1em 0.4em;
+
+  flex-direction      : column;
+  align-items         : center;
 }
 
 .startbutton {
-  background: linear-gradient(45deg,darkgreen,lightgreen);
-  margin-top: 3em;
-  height: 2em;
-  width: 5em;
-  border-radius: 0.5em;
-  padding: 0;
+  height        : 2em;
+  width         : 5em;
+  margin-top    : 3em;
+  padding       : 0;
+
+  background    : linear-gradient(45deg,darkgreen,lightgreen);
   font-family   : 'VT323', monospace;
-  font-size: 0.5em;
+  font-size     : 0.5em;
+  border-radius : 0.5em;
 }
 
 .textstring {
-  text-align: center;
-  border-radius: 0.3em;
-  margin-top: 1em;
-  height: 2em;
-  width: 15em;
+  height        : 2em;
+  width         : 15em;
+  margin-top    : 1em;
+
   font-family   : 'VT323', monospace;
-  font-size: 0.5em;
+  font-size     : 0.5em;
+  text-align    : center;
+  border-radius : 0.3em;
 }
 
 .startgame {
-  margin-top: 1em;
-  background: radial-gradient(red,yellow);
-  margin-top: 3em;
-  height: 2em;
-  width: 10em;
-  border-radius: 0.5em;
-  padding: 0;
+  height        : 2em;
+  width         : 10em;
+  margin-top    : 1em;
+  margin-top    : 3em;
+  padding       : 0;
+
+  background    : radial-gradient(red,yellow);
   font-family   : 'VT323', monospace;
-  font-size: 0.5em;
+  font-size     : 0.5em;
+  border-radius : 0.5em;
 }
 
 h1,h3 {
-  margin: 0.2em;
-  padding: 0.1em;
+  margin      : 0.2em;
+  padding     : 0.1em;
+
+  white-space : nowrap;
 }

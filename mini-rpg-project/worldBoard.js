@@ -3,6 +3,8 @@
 
 const DisplayFontScale = 30 // the bigger the nunmber the smaller the display font size
 
+const difficulty = 40 // the bigger the number the harder the game
+
 const shouts = [ "COME GET SOME!", "GET OVER HERE!",
   "GETCHA FREE DEATHS HERE!" ]
 
@@ -669,7 +671,7 @@ WorldBoard.prototype.checkForLevelUp = function( player ) {
   }
 }
 WorldBoard.prototype.getXpNeededForLevel = function( strength ) {
-  return 60 * factorial( strength )
+  return difficulty * factorial( strength )
 }
 WorldBoard.prototype.updateSkillDisplay = function() {
   var player = this.creatureLocs[ this.playerY ][ this.playerX ];

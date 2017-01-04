@@ -86,8 +86,8 @@ GameSys.prototype.resizeInfoDisplay = function( event ) {
 GameSys.prototype.resetGame = function( startString ) {
   $( ".gameBoard" ).remove();
   var width, height
-  width = 20;
-  height = 20;
+  width = 25;
+  height = 25;
   var worldBoard = new WorldBoard( width, height );
   gameSys.initNumbSeedFromString( startString );
   worldBoard.makeBlankBoardHtml();
