@@ -104,6 +104,7 @@ GameSys.prototype.resetGame = function( startString ) {
   worldBoard.initPlayer();
   worldBoard.randomizeCreatures();
   worldBoard.drawCreatures();
+
   //testing
   // worldBoard.drawEntireMap() //debug only, turn off when playing
 }

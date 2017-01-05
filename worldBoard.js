@@ -1,6 +1,8 @@
 // when accessing array or HTML : y first, then x (and R-Y-C-X on CSS selectors)
 // when passing arguments to function or handling coord-pair array : x first, then y
 
+
+
 // make sound reference vars
 const hit = document.getElementById( "hit" );
 const heromiss = document.getElementById( "heromiss" );
@@ -107,10 +109,6 @@ function factorial( number ) {
   for ( i = 0; i < number; i++ )
     output += i;
   return output
-}
-
-function godModeOn() {
-  worldBoard.creatureLocs[this.playerY][this.playerX].strength = 100;
 }
 
 //PLAYER CONSTRUCTOR
