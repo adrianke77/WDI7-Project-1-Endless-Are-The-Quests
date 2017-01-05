@@ -190,8 +190,8 @@ WorldBoard.prototype.makeBlankBoardHtml = function() {
     } );
   } );
   var forceSizeTile = $( "<div></div>" );
-  vertical = ( this.landTiles.length + 2 ) * 24
-  horizontal = ( this.landTiles[ 0 ].length + 2 ) * 30
+  vertical = ( this.landTiles.length + 4 ) * 24
+  horizontal = ( this.landTiles[ 0 ].length + 4 ) * 30
   forceSizeTile.css( {
       top: vertical,
       left: horizontal
@@ -469,6 +469,50 @@ WorldBoard.prototype.playerMove = function( direction ) {
     //move to empty square
     console.log( step )
     step.play()
+    var playerX = this.playerX;
+    var playerY = this.playerY;
+    if ( playerY % 2 === 0 ) {// odd row (zero index)
+      console.log("from odd row")
+      if ( targetY > playerY ) {
+        if ( targetX === playerX ) //NW
+          window.scrollBy( -15, 24 )
+        if ( targetX > playerX ) //NE
+          window.scrollBy( 15, 24)
+      }
+      if ( targetY === playerY ) {
+        if ( targetX > playerX ) //E
+          window.scrollBy( 30, 0 )
+        if ( targetX < playerX ) //W
+          window.scrollBy( -30, 0 )
+      }
+      if ( targetY < playerY ) {
+        if ( targetX === playerX ) //SW
+          window.scrollBy( -15, -24 )
+        if ( targetX > playerX ) //SE
+          window.scrollBy( 15, -24)
+      }
+    }
+    if ( playerY % 2 !== 0 ) {// even row (zero index)
+      console.log("from even row")
+      if ( targetY > playerY ) {
+        if ( targetX < playerX ) //NW
+          window.scrollBy( -15, 24 )
+        if ( targetX === playerX ) //NE
+          window.scrollBy( 15, 24 )
+      }
+      if ( targetY === playerY ) {
+        if ( targetX > playerX ) //E
+          window.scrollBy( 30, 0 )
+        if ( targetX < playerX ) //W
+          window.scrollBy( -30, 0 )
+      }
+      if ( targetY < playerY ) {
+        if ( targetX < playerX ) //SW
+          window.scrollBy( -15, -24 )
+        if ( targetX === playerX ) //SE
+          window.scrollBy( 15, -24 )
+      }
+    }
     this.playerX = targetX;
     this.playerY = targetY;
     this.creatureLocs[ targetY ][ targetX ] = self.creatureLocs[ y ][ x ];
@@ -501,7 +545,8 @@ WorldBoard.prototype.shout = function() {
   this.updateFog( this.playerX, this.playerY );
   this.enemyTurn();
 }
-WorldBoard.prototype.activateNearbyEnemies = function( self, inputx, inputy ) {
+WorldBoard.prototype.activateNearbyEnemies = function( self, inputx,
+  inputy ) {
   var nearCells = this.nearbyCells( inputx, inputy );
   nearCells.forEach( function( ele, ind, arr ) {
     var x = ele[ 0 ];
@@ -636,14 +681,15 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
   if ( player.health <= 0 ) {
     this.popup( "THE KNIGHT IS DEAD!", 0.5, "white", this.playerX, this.playerY )
     playerdeath.play();
-    $( ".creatR" + this.playerY + "C" + this.playerX ).removeClass("waiting")
-    $( ".fogR" + this.playerY + "C" + this.playerX ).addClass("death")
+    $( ".creatR" + this.playerY + "C" + this.playerX ).removeClass(
+      "waiting" )
+    $( ".fogR" + this.playerY + "C" + this.playerX ).addClass( "death" )
     $( ".health" ).css( "background-size", "100% 1000%" )
     $( ".strength" ).text( "DEAD!" )
-    $(".defense").text("click to renew the cycle")
-    $(".defense").click(function() {
+    $( ".defense" ).text( "click to renew the cycle" )
+    $( ".defense" ).click( function() {
       location.reload()
-    })    
+    } )
     this.creatureLocs[ this.playerY ][ this.playerX ] = null
     this.drawCreature( this.playerY, this.playerX )
   }

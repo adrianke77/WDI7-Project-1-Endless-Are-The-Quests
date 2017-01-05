@@ -26,9 +26,9 @@ body{
 }
 .gameBoard {
   position : absolute;
-  top      : 5%;
-  left     : 5%;
-  margin   : 10%;
+  top      : 15%;
+  left     : 15%;
+  margin   : 15%;
 }
 .background {
   z-index         : -10;
