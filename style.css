@@ -135,7 +135,7 @@ body{
   }
 }
 .drawin {
-  animation : fadein 1s linear forwards;
+  animation : fadein 2s linear forwards;
 }
 .slowappear {
   animation : fadein 4s linear forwards;

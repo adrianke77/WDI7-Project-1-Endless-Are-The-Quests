@@ -102,7 +102,7 @@ GameSys.prototype.resetGame = function( startString ) {
   worldBoard.randomizeCreatures();
   worldBoard.drawCreatures();
   //testing
-  // worldBoard.drawEntireMap() //debug only, turn off when playing
+  worldBoard.drawEntireMap() //debug only, turn off when playing
 }
 GameSys.prototype.makeStartListener = function() {
   $( ".startbutton" ).click( {

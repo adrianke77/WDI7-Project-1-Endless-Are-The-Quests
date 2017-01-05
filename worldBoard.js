@@ -57,7 +57,7 @@ const creatureTypes = {
   stingwing: [ 17, "fly", 17, 1, 3, 5, 2, 2, 80 ],
   ogre: [ 18, "walk", 18, 1, 3, 5, 5, 6, 85 ],
   treant: [ 19, "walk", 19, 1, 3, 5, 7, 6, 90 ],
-  knightsoul: [ 20, "walk", 20, 1, 3, 5, 1, 5, 9999 ],
+  demonknight: [ 20, "walk", 20, 1, 3, 5, 1, 5, 9999 ],
 }
 
 const terrainDefenseVals = {
@@ -169,7 +169,7 @@ WorldBoard.prototype.makeBlankBoardHtml = function() {
       creatureCell.addClass( "creatbox creatR" + rowidx + "C" +
         colidx + " waiting" );
       fogCell.addClass( "fogbox fogR" + rowidx + "C" + colidx +
-        " fog slowappear" );
+        " fog drawin" );
       var rowshift =
         rowidx % 2 === 0 ? 15 : 0;
       var topPos = 24 * rowidx;
