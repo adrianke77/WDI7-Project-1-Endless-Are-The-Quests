@@ -63,11 +63,13 @@ GameSys.prototype.makeFixedDisplays = function() {
   var healthDisplay = $( "<div></div>" );
   var strengthDisplay = $( "<div></div>" );
   var defenseDisplay = $( "<div></div>" );
+  var controlguide = $( "<div></div>" )
   healthDisplay.addClass( "health display" )
   strengthDisplay.addClass( "strength display" )
   defenseDisplay.addClass( "defense display" )
+  controlguide.addClass("controlguide display")
   var displays = $( "<div></div>" );
-  displays.append( healthDisplay, strengthDisplay, defenseDisplay )
+  displays.append( healthDisplay, strengthDisplay, defenseDisplay, controlguide )
   $( "body" ).append( displays )
   $( ".health" ).text( " Vitality" )
   $( ".strength" ).text( " Skill" )

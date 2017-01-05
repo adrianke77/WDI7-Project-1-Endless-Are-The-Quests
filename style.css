@@ -80,13 +80,13 @@ body{
   z-index       : 10;
   width         : auto;
   padding       : 1%;
+  opacity       : 0.7;
   font-family   : 'VT323', monospace;
   font-weight   : bold ;
   color         : rgba(255,255,255,0.8);
   text-shadow   : black 0 0 0.5em ;
   border        : 0.1em solid rgba(0,0,0,0.8);
   border-radius : 0.5em;
-  opacity: 0.7;
 }
 .health {
   bottom              : 5%;
@@ -108,6 +108,16 @@ body{
   bottom     : 5%;
   width      : 10em;
   text-align : center;
+}
+.controlguide {
+  top             : 1%;
+  right           : 1%;
+  height: 8em;
+  width: 8em;
+  background      : url('./art/controlguide.png') no-repeat ;
+  background-size : contain !important;
+  border: 0 !important;
+  ;
 }
 .waiting {
   animation       : bounce 2s ease infinite;
@@ -178,6 +188,7 @@ body{
   100%{opacity:0}
 }
 .startmenu {
+  position            : fixed;
   display             : flex;
   height              : 100%;
   width               : 100%;
@@ -193,7 +204,6 @@ body{
   text-shadow         : white 0.1em 0.1em 0.4em;
   flex-direction      : column;
   align-items         : center;
-  position: fixed;
 }
 .startbutton {
   height        : 2em;
@@ -235,15 +245,15 @@ body{
 h1,h3 {
   margin      : 0.3em;
   padding     : 0.1em;
+  opacity     : 0;
   white-space : nowrap;
-  opacity: 0;
   animation   : slowappear 3s linear forwards 2s;
 }
 h1 {
   font-size : 4em;
 }
 h3{
-  padding-top: 0.5em;
+  padding-top : 0.5em;
 }
 @keyframes slowappear {
   0% {
