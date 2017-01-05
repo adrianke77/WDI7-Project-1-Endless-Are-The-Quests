@@ -85,11 +85,12 @@ GameSys.prototype.resizeInfoDisplay = function( event ) {
 }
 GameSys.prototype.resetGame = function( startString ) {
   $( ".gameBoard" ).remove();
-  var width, height
-  width = 25;
-  height = 25;
-  var worldBoard = new WorldBoard( width, height );
   gameSys.initNumbSeedFromString( startString );
+  var width, height
+  width = genRange(20,30);
+  height = genRange(20,30);
+  var worldBoard = new WorldBoard( width, height );
+  
   worldBoard.makeBlankBoardHtml();
   worldBoard.randomizeTerrain();
   worldBoard.drawTerrain();

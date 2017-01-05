@@ -1,12 +1,25 @@
 // when accessing array or HTML : y first, then x (and R-Y-C-X on CSS selectors)
 // when passing arguments to function or handling coord-pair array : x first, then y
 
+// make sound reference vars
+const hit = document.getElementById( "hit" );
+const heromiss = document.getElementById( "heromiss" );
+const monstermiss = document.getElementById( "monstermiss" );
+const step = document.getElementById( "step" );
+const birds1 = document.getElementById( "birds1" );
+const birds2 = document.getElementById( "birds2" );
+const birds3 = document.getElementById( "birds3" );
+const birds4 = document.getElementById( "birds4" );
+const monsterdeath = document.getElementById( "monsterdeath" );
+const playerdeath = document.getElementById( "playerdeath" );
+const levelup = document.getElementById( "levelup" );
+const shout = document.getElementById( "shout" );
+
 const DisplayFontScale = 30 // the bigger the nunmber the smaller the display font size
 
 const difficulty = 40 // the bigger the number the harder the game
 
-const shouts = [ "COME GET SOME!", "GET OVER HERE!",
-  "GETCHA FREE DEATHS HERE!" ]
+const shouts = [ "GET OVER HERE!" ]
 
 const landTilesCoords = {
   plain: [ 0, 0 ],
@@ -26,9 +39,9 @@ const creatureTypes = {
   //the higher the rarity the less common the monster
   //treasureMax is a non-included max
   //for drawing sprite;
-  eagle: [ 2, "fly", 4, 3, 0, 3, 7, 5, 10 ],
-  goblin: [ 3, "walk", 3, 1, 2, 4, 4, 2, 10 ],
-  dog: [ 3, "walk", 2, 2, 0, 3, 7, 3, 10 ],
+  greyhawk: [ 2, "fly", 4, 3, 0, 3, 7, 5, 10 ],
+  kobold: [ 3, "walk", 3, 1, 2, 4, 4, 2, 10 ],
+  dobermad: [ 3, "walk", 2, 2, 0, 3, 7, 3, 10 ],
   deathrose: [ 5, "walk", 5, 1, 3, 5, 5, 3, 20 ],
   poltergeist: [ 6, "fly", 6, 1, 3, 5, 2, 1, 25 ],
   gargoyle: [ 7, "fly", 7, 1, 3, 5, 4, 1, 30 ],
@@ -40,11 +53,11 @@ const creatureTypes = {
   acidmound: [ 13, "walk", 13, 1, 3, 5, 1, 4, 60 ],
   crystalcrab: [ 14, "walk", 14, 1, 3, 5, 3, 4, 65 ],
   greatsnake: [ 15, "walk", 15, 1, 3, 5, 7, 4, 70 ],
-  hotgolem: [ 16, "walk", 16, 1, 3, 5, 3, 5, 75 ],
-  wingsting: [ 17, "fly", 17, 1, 3, 5, 2, 2, 80 ],
+  brickgolem: [ 16, "walk", 16, 1, 3, 5, 3, 5, 75 ],
+  stingwing: [ 17, "fly", 17, 1, 3, 5, 2, 2, 80 ],
   ogre: [ 18, "walk", 18, 1, 3, 5, 5, 6, 85 ],
   treant: [ 19, "walk", 19, 1, 3, 5, 7, 6, 90 ],
-  blackreaper: [ 20, "walk", 20, 1, 3, 5, 1, 5, 9999 ],
+  knightsoul: [ 20, "walk", 20, 1, 3, 5, 1, 5, 9999 ],
 }
 
 const terrainDefenseVals = {
@@ -146,7 +159,7 @@ function WorldBoard( width, height ) {
 }
 WorldBoard.prototype.makeBlankBoardHtml = function() {
   var gameBoard = $( "<div></div" );
-  gameBoard.addClass( "gameBoard" )
+  gameBoard.addClass( "gameBoard" );
   this.landTiles.forEach( function( row, rowidx ) {
     row.forEach( function( tile, colidx ) {
       var landCell = $( "<div></div>" );
@@ -156,7 +169,7 @@ WorldBoard.prototype.makeBlankBoardHtml = function() {
       creatureCell.addClass( "creatbox creatR" + rowidx + "C" +
         colidx + " waiting" );
       fogCell.addClass( "fogbox fogR" + rowidx + "C" + colidx +
-        " fog drawin" );
+        " fog slowappear" );
       var rowshift =
         rowidx % 2 === 0 ? 15 : 0;
       var topPos = 24 * rowidx;
@@ -176,7 +189,17 @@ WorldBoard.prototype.makeBlankBoardHtml = function() {
       gameBoard.append( landCell, creatureCell, fogCell );
     } );
   } );
+  var forceSizeTile = $( "<div></div>" );
+  vertical = ( this.landTiles.length + 2 ) * 24
+  horizontal = ( this.landTiles[ 0 ].length + 2 ) * 30
+  forceSizeTile.css( {
+      top: vertical,
+      left: horizontal
+    } )
+    .addClass( "forceSizeTile landbox" )
+  gameBoard.append( forceSizeTile )
   $( "body" ).append( gameBoard )
+  console.log( forceSizeTile )
 }
 WorldBoard.prototype.drawTerrain = function() {
   this.landTiles.forEach( function( row, rowidx ) {
@@ -444,6 +467,8 @@ WorldBoard.prototype.playerMove = function( direction ) {
   } )
   if ( isMoveValid && self.creatureLocs[ targetY ][ targetX ] === null ) {
     //move to empty square
+    console.log( step )
+    step.play()
     this.playerX = targetX;
     this.playerY = targetY;
     this.creatureLocs[ targetY ][ targetX ] = self.creatureLocs[ y ][ x ];
@@ -465,6 +490,7 @@ WorldBoard.prototype.playerMove = function( direction ) {
 WorldBoard.prototype.shout = function() {
   shoutChoice = shouts[ Math.floor( Math.random() * shouts.length ) ]
   this.popup( shoutChoice, 0.5, "white", this.playerX, this.playerY )
+  shout.play()
   var self = this;
   nearCells = this.nearbyCells( this.playerX, this.playerY )
   nearCells.forEach( function( location ) {
@@ -486,7 +512,6 @@ WorldBoard.prototype.activateNearbyEnemies = function( self, inputx, inputy ) {
         self.creatureAlertedPopup( x, y )
       self.creatureLocs[ y ][ x ].isHunting = true;
       self.ifHuntingAnimate( x, y );
-
     }
   } )
 }
@@ -534,7 +559,7 @@ WorldBoard.prototype.creatureAlertedPopup = function( x, y ) {
   } )
 }
 WorldBoard.prototype.makeRisingFadingDiv =
-  function( x, y, popupDiv, counter ) {
+  function( x, y, popupDiv ) {
     var popupName = "popup" + x + y
     $( ".fogR" + y + "C" + x ).append( popupDiv )
     popupDiv.animate( {
@@ -597,17 +622,28 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
   var damageDone = minZero( genMax( strengthCompare + 1 ) );
   this.creatureLocs[ this.playerY ][ this.playerX ].health -= damageDone;
   var damageString = ""
-  if ( damageDone === 0 )
+  if ( damageDone === 0 ) {
+    monstermiss.play()
     damageString = attacker.type + " misses!"
-  else
-    damageString = attacker.type + " hits, " + damageDone + " damage!";
+  } else {
+    hit.play()
+    damageString = attacker.type + " does " + damageDone + " damage!";
+  }
   damageString = damageString.charAt( 0 ).toUpperCase() +
     damageString.slice( 1, damageString.length )
   this.popup( damageString, 0.5, "white", this.playerX, this.playerY )
   this.updateHealthDisplay();
   if ( player.health <= 0 ) {
-    console.log( "the player has died!!!" )
+    this.popup( "THE KNIGHT IS DEAD!", 0.5, "white", this.playerX, this.playerY )
+    playerdeath.play();
+    $( ".creatR" + this.playerY + "C" + this.playerX ).removeClass("waiting")
+    $( ".fogR" + this.playerY + "C" + this.playerX ).addClass("death")
     $( ".health" ).css( "background-size", "100% 1000%" )
+    $( ".strength" ).text( "DEAD!" )
+    $(".defense").text("click to renew the cycle")
+    $(".defense").click(function() {
+      location.reload()
+    })    
     this.creatureLocs[ this.playerY ][ this.playerX ] = null
     this.drawCreature( this.playerY, this.playerX )
   }
@@ -623,14 +659,18 @@ WorldBoard.prototype.attackByPlayer = function( player, targetX, targetY ) {
       terrainDefenseMod ) );
   var damageString = ""
   var damageDone = ( genMax( strengthCompare + 2 ) );
-  if ( damageDone === 0 )
-    damageString = "Player misses!"
-  else
-    damageString = "Player hits, " + damageDone + " damage!";
+  if ( damageDone === 0 ) {
+    heromiss.play();
+    damageString = "Knight misses!"
+  } else {
+    hit.play();
+    damageString = "Knight does " + damageDone + " damage!";
+  }
   this.popup( damageString, 0.5, "white", targetX, targetY )
   this.creatureLocs[ targetY ][ targetX ].health -= damageDone;
   if ( enemy.health <= 0 ) {
-    this.popup( "The creature is defeated!", 0.5, "white", targetX, targetY )
+    monsterdeath.play()
+    this.popup( "DEFEATED!", 0.5, "white", targetX, targetY )
     var goldDrop = genRange( enemy.treasureMin, enemy.treasureMax );
     player.gold += goldDrop;
     player.xp += Math.floor( 10 * ( enemy.strength * this.xpScale ) )
@@ -650,6 +690,7 @@ WorldBoard.prototype.updateHealthDisplay = function() {
 }
 WorldBoard.prototype.checkForLevelUp = function( player ) {
   if ( player.xp > player.xpToNextLevel ) {
+    levelup.play()
     player.strength += 1;
     player.maxHealth += 4;
     var healing = Math.floor( ( player.maxHealth - player.health ) / 2 )
@@ -658,16 +699,15 @@ WorldBoard.prototype.checkForLevelUp = function( player ) {
     player.xpToNextLevel = this.getXpNeededForLevel( player.strength )
     this.updateHealthDisplay();
     this.updateSkillDisplay();
-    var fireDiv = $( "<div></div>" )
-    var backgroundValue = "url('./art/fire2.gif') no-repeat"
-    fireDiv.addClass( "levelup" )
-    $( ".fogR" + this.playerY + "C" + this.playerX ).append( fireDiv )
-    fireDiv.animate( {
+    this.popup( "LEVEL UP!", 0.5, "white", this.playerX, this.playerY )
+    var levelupDiv = $( "<div></div>" )
+    $( ".fogR" + this.playerY + "C" + this.playerX ).append( levelupDiv )
+    levelupDiv.addClass( "levelup" )
+    levelupDiv.animate( {
       opacity: 1
-    }, 2500, "linear", function() {
+    }, 3000, "linear", function() {
       $( ".levelup" ).remove()
     } )
-
   }
 }
 WorldBoard.prototype.getXpNeededForLevel = function( strength ) {
