@@ -57,7 +57,7 @@ const creatureTypes = {
   stingwing: [ 17, "fly", 17, 1, 3, 5, 2, 2, 80 ],
   ogre: [ 18, "walk", 18, 1, 3, 5, 5, 6, 85 ],
   treant: [ 19, "walk", 19, 1, 3, 5, 7, 6, 90 ],
-  demonknight: [ 20, "walk", 20, 1, 3, 5, 1, 5, 9999 ],
+  fallenknight: [ 20, "walk", 20, 1, 3, 5, 1, 5, 9999 ],
 }
 
 const terrainDefenseVals = {
@@ -469,12 +469,12 @@ WorldBoard.prototype.playerMove = function( direction ) {
     step.play()
     var playerX = this.playerX;
     var playerY = this.playerY;
-    if ( playerY % 2 === 0 ) {// odd row (zero index)
+    if ( playerY % 2 === 0 ) { // odd row (zero index)
       if ( targetY > playerY ) {
         if ( targetX === playerX ) //NW
           window.scrollBy( -15, 24 )
         if ( targetX > playerX ) //NE
-          window.scrollBy( 15, 24)
+          window.scrollBy( 15, 24 )
       }
       if ( targetY === playerY ) {
         if ( targetX > playerX ) //E
@@ -486,10 +486,10 @@ WorldBoard.prototype.playerMove = function( direction ) {
         if ( targetX === playerX ) //SW
           window.scrollBy( -15, -24 )
         if ( targetX > playerX ) //SE
-          window.scrollBy( 15, -24)
+          window.scrollBy( 15, -24 )
       }
     }
-    if ( playerY % 2 !== 0 ) {// even row (zero index)
+    if ( playerY % 2 !== 0 ) { // even row (zero index)
       if ( targetY > playerY ) {
         if ( targetX < playerX ) //NW
           window.scrollBy( -15, 24 )
@@ -682,7 +682,7 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
     $( ".fogR" + this.playerY + "C" + this.playerX ).addClass( "death" )
     $( ".health" ).css( "background-size", "100% 1000%" )
     $( ".strength" ).text( "DEAD!" )
-    $( ".defense" ).text( "click to renew the cycle" )
+    $( ".defense" ).text( "click to replace the lost" )
     $( ".defense" ).click( function() {
       location.reload()
     } )
@@ -720,6 +720,15 @@ WorldBoard.prototype.attackByPlayer = function( player, targetX, targetY ) {
     this.creatureLocs[ targetY ][ targetX ] = null;
     this.drawCreature( targetX, targetY )
     this.updateSkillDisplay();
+    if ( enemy.type === "fallenknight" ) {
+      $( document ).off();
+      $( ".winscreen" ).removeClass( "hidden" );
+      $( ".defense" ).text( "Click here to hunt yourself" );
+      $( ".winscreen").text("You have secured another twenty years of peace for the land; unfortunately you have become the next Fallen Knight. Another hero must rise to rid the land of you.");
+      $( ".defense" ).click( function() {
+        location.reload()
+      } )
+    }
   }
 }
 WorldBoard.prototype.updateHealthDisplay = function() {

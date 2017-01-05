@@ -98,7 +98,7 @@ body{
 }
 .strength {
   bottom              : 5%;
-  left                : 38%;
+  left                : 36%;
   background          : linear-gradient( rgba(255,255,255,1),rgba(0,0,0,1));
   background-position : 0 1.6em;
   background-size     : 100% 100%;
@@ -106,17 +106,17 @@ body{
 .defense {
   right      : 7%;
   bottom     : 5%;
-  width      : 10em;
+  width      : 11em;
   text-align : center;
 }
 .controlguide {
   top             : 1%;
   right           : 1%;
-  height: 8em;
-  width: 8em;
+  height          : 8em;
+  width           : 8em;
   background      : url('./art/controlguide.png') no-repeat ;
   background-size : contain !important;
-  border: 0 !important;
+  border          : 0 !important;
   ;
 }
 .waiting {
@@ -276,4 +276,16 @@ h3{
     opacity   : 1;
     transform : scale(3);
   }
+}
+.winscreen {
+  position: fixed;
+  z-index    : 50;
+  width: 30%;
+  height: 40%;
+  background : url('./art/menu.gif') no-repeat;
+  background-size: cover;
+  background-position: center;
+  font-family   : 'VT323', monospace;
+  font-size: 4em;
+  padding: 1em !important;
 }

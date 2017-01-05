@@ -67,9 +67,10 @@ GameSys.prototype.makeFixedDisplays = function() {
   healthDisplay.addClass( "health display" )
   strengthDisplay.addClass( "strength display" )
   defenseDisplay.addClass( "defense display" )
-  controlguide.addClass("controlguide display")
+  controlguide.addClass( "controlguide display" )
   var displays = $( "<div></div>" );
-  displays.append( healthDisplay, strengthDisplay, defenseDisplay, controlguide )
+  displays.append( healthDisplay, strengthDisplay, defenseDisplay,
+    controlguide )
   $( "body" ).append( displays )
   $( ".health" ).text( " Vitality" )
   $( ".strength" ).text( " Skill" )
@@ -89,10 +90,10 @@ GameSys.prototype.resetGame = function( startString ) {
   $( ".gameBoard" ).remove();
   gameSys.initNumbSeedFromString( startString );
   var width, height
-  width = genRange(20,30);
-  height = genRange(20,30);
+    width = genRange(20,30);
+    height = genRange(20,30);
   var worldBoard = new WorldBoard( width, height );
-  
+
   worldBoard.makeBlankBoardHtml();
   worldBoard.randomizeTerrain();
   worldBoard.drawTerrain();
