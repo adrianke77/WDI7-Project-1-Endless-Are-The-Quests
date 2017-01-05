@@ -109,6 +109,10 @@ function factorial( number ) {
   return output
 }
 
+function godModeOn() {
+  worldBoard.creatureLocs[this.playerY][this.playerX].strength = 100;
+}
+
 //PLAYER CONSTRUCTOR
 function Player() {
   this.type = "player"
@@ -771,8 +775,6 @@ WorldBoard.prototype.updateSkillDisplay = function () {
   firstColor = parseInt( 255 - ( 255 * player.strength / 20 ) );
   secondColor = parseInt( 255 * player.strength / 20 );
   xpFraction = ( player.xp - player.xpPrevLevel ) / (player.xpToNextLevel - player.xpPrevLevel)
-  console.log( "playerxp,playerxpPrevlevel,playerxptonextlevel,xpFraction", player.xp, player.xpPrevLevel,
-    player.xpToNextLevel,xpFraction )
   xpBkgrndPosition = 1.6 - ( 1.6 * xpFraction );
   gradientString = "linear-gradient(rgba(255,255," +
     firstColor + ",1),rgba(0,0," + secondColor + ",1))"
