@@ -115,7 +115,6 @@ GameSys.prototype.startGame = function( event ) {
   $( ".textstring" ).removeClass( "hidden" )
   $( ".startgame" ).removeClass( "hidden" )
     .on( "click", function() {
-      console.log( "startgame clicked" )
       var startString = $( ".textstring" ).val()
       $( ".startmenu" ).addClass( "hidden" )
       self.resetGame( startString )

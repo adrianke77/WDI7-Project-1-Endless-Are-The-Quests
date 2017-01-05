@@ -199,7 +199,6 @@ WorldBoard.prototype.makeBlankBoardHtml = function() {
     .addClass( "forceSizeTile landbox" )
   gameBoard.append( forceSizeTile )
   $( "body" ).append( gameBoard )
-  console.log( forceSizeTile )
 }
 WorldBoard.prototype.drawTerrain = function() {
   this.landTiles.forEach( function( row, rowidx ) {
@@ -467,12 +466,10 @@ WorldBoard.prototype.playerMove = function( direction ) {
   } )
   if ( isMoveValid && self.creatureLocs[ targetY ][ targetX ] === null ) {
     //move to empty square
-    console.log( step )
     step.play()
     var playerX = this.playerX;
     var playerY = this.playerY;
     if ( playerY % 2 === 0 ) {// odd row (zero index)
-      console.log("from odd row")
       if ( targetY > playerY ) {
         if ( targetX === playerX ) //NW
           window.scrollBy( -15, 24 )
@@ -493,7 +490,6 @@ WorldBoard.prototype.playerMove = function( direction ) {
       }
     }
     if ( playerY % 2 !== 0 ) {// even row (zero index)
-      console.log("from even row")
       if ( targetY > playerY ) {
         if ( targetX < playerX ) //NW
           window.scrollBy( -15, 24 )
