@@ -52,17 +52,6 @@ body{
   position : absolute;
   height   : 34.6px;
   width    : 30px;
-  /*
-  sample tile selecting  
-  background-position : -72px -64px !important; 
-
-  move one sprite to right: 
-  -36px
-  move one sprite down and to right: 
-  -18px -33 px
-  move two sprites down (bottom row):
-  0 -66px
-  */
 }
 .fogbox {
   position : absolute;

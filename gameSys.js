@@ -1,10 +1,10 @@
 // GAME SYSTEM CONSTRUCTOR
 function GameSys() {
   this.movesMade = 0;
-  this.windowStartWidth = $( window ).width()
-  this.startFontHeight = 0
-  this.windowScale = 0
-  var self = this
+  this.windowStartWidth = $( window ).width();
+  this.startFontHeight = 0;
+  this.windowScale = 0;
+  var self = this;
 }
 GameSys.prototype.initNumbSeedFromString = function( string ) {
   // returns a number betwen 0 and 1 that will always generate for the string
@@ -18,7 +18,7 @@ GameSys.prototype.initNumbSeedFromString = function( string ) {
     seed += charValue;
   }
   var x = Math.sin( seed++ ) * 10000;
-  numbSeed = x - Math.floor( x )
+  numbSeed = x - Math.floor( x );
 }
 GameSys.prototype.makeKeypressListeners = function( worldBoardInstance ) {
   var self = this; //make context visible to inside of event handler
@@ -63,18 +63,18 @@ GameSys.prototype.makeFixedDisplays = function() {
   var healthDisplay = $( "<div></div>" );
   var strengthDisplay = $( "<div></div>" );
   var defenseDisplay = $( "<div></div>" );
-  var controlguide = $( "<div></div>" )
-  healthDisplay.addClass( "health display" )
-  strengthDisplay.addClass( "strength display" )
-  defenseDisplay.addClass( "defense display" )
-  controlguide.addClass( "controlguide display" )
+  var controlguide = $( "<div></div>" );
+  healthDisplay.addClass( "health display" );
+  strengthDisplay.addClass( "strength display" );
+  defenseDisplay.addClass( "defense display" );
+  controlguide.addClass( "controlguide display" );
   var displays = $( "<div></div>" );
   displays.append( healthDisplay, strengthDisplay, defenseDisplay,
-    controlguide )
-  $( "body" ).append( displays )
-  $( ".health" ).text( " Vitality" )
-  $( ".strength" ).text( " Skill" )
-  $( ".defense" ).text( " Defense" )
+    controlguide );
+  $( "body" ).append( displays );
+  $( ".health" ).text( " Vitality" );
+  $( ".strength" ).text( " Skill" );
+  $( ".defense" ).text( " Defense" );
   this.startFontHeight = this.windowStartWidth / DisplayFontScale;
   $( ".display" ).css( "font-size", this.startFontHeight );
 }
