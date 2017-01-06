@@ -79,11 +79,12 @@ GameSys.prototype.makeFixedDisplays = function() {
   $( ".display" ).css( "font-size", this.startFontHeight );
 }
 GameSys.prototype.resizeInfoDisplay = function( event ) {
-  if ( typeof event !== "undefined" ) self = event.data.self;
+  if ( typeof event !== "undefined" ) 
+    self = event.data.self;
   else
     self = this
-  this.windowScale = $( window ).width() / self.windowStartWidth;
-  var adjustedFontSize = self.startFontHeight * this.windowScale;
+  self.windowScale = $( window ).width() / self.windowStartWidth;
+  var adjustedFontSize = self.startFontHeight * self.windowScale;
   $( ".display" ).css( "font-size", adjustedFontSize );
 }
 GameSys.prototype.resetGame = function( startString ) {
@@ -93,7 +94,6 @@ GameSys.prototype.resetGame = function( startString ) {
     width = genRange(20,30);
     height = genRange(20,30);
   var worldBoard = new WorldBoard( width, height );
-
   worldBoard.makeBlankBoardHtml();
   worldBoard.randomizeTerrain();
   worldBoard.drawTerrain();
@@ -104,9 +104,9 @@ GameSys.prototype.resetGame = function( startString ) {
   worldBoard.initPlayer();
   worldBoard.randomizeCreatures();
   worldBoard.drawCreatures();
-
   //testing
-  // worldBoard.drawEntireMap() //debug only, turn off when playing
+  // worldBoard.drawEntireMap() // check positions of map tiles and monsters
+  // worldBoard.winScreen() // test win function
 }
 GameSys.prototype.makeStartListener = function() {
   $( ".startbutton" ).click( {

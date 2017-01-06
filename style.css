@@ -106,7 +106,6 @@ body{
   background      : url('./art/controlguide.png') no-repeat ;
   background-size : contain !important;
   border          : 0 !important;
-  ;
 }
 .waiting {
   animation       : bounce 2s ease infinite;
@@ -270,11 +269,16 @@ h3{
   position: fixed;
   z-index    : 50;
   width: 30%;
-  height: 40%;
+  height: 50%;
+  top: 10%;
   background : url('./art/menu.gif') no-repeat;
   background-size: cover;
   background-position: center;
   font-family   : 'VT323', monospace;
-  font-size: 4em;
-  padding: 1em !important;
+  padding: 0.5em !important;
+  white-space: pre-wrap;
+  
+}
+.winanim {
+  animation       : fadein 5s linear forwards !important;
 }
