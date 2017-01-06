@@ -167,7 +167,7 @@ WorldBoard.prototype.makeBlankBoardHtml = function() {
       var fogCell = $( "<div></div>)" );
       landCell.addClass( "landbox landR" + rowidx + "C" + colidx );
       creatureCell.addClass( "creatbox creatR" + rowidx + "C" +
-        colidx + " waiting" );
+        colidx );
       fogCell.addClass( "fogbox fogR" + rowidx + "C" + colidx +
         " fog drawin" );
       var rowshift =
@@ -294,8 +294,7 @@ WorldBoard.prototype.drawCreatures = function() {
   this.oldNoFogZone.forEach( function( ele, ind, arr ) {
     var x = ele[ 0 ];
     var y = ele[ 1 ];
-    $( ".creatR" + y + "C" + x ).removeClass( "creature" ).removeClass(
-      "hunting" );
+    $( ".creatR" + y + "C" + x ).removeClass( "creature hunting waiting" )
   } )
   this.noFogZone.forEach( function( ele, ind, arr ) {
     var x = ele[ 0 ];
@@ -320,7 +319,7 @@ WorldBoard.prototype.drawCreature = function( x, y ) {
     // make string to shift spritesheet to
     var terrainHere = self.landTiles[ y ][ x ];
     $( ".creatR" + y + "C" + x )
-      .addClass( "creature" )
+      .addClass( "creature waiting" )
       .css( "background-position", posString )
   }
   this.ifHuntingAnimate( x, y )
@@ -509,7 +508,8 @@ WorldBoard.prototype.playerMove = function( direction ) {
     }
     this.playerX = targetX;
     this.playerY = targetY;
-    this.creatureLocs[ targetY ][ targetX ] = self.creatureLocs[ y ][ x ];
+    this.creatureLocs[ targetY ][ targetX ] = self.creatureLocs[ y ][
+              x ];
     this.creatureLocs[ y ][ x ] = null;
     this.drawCreature( x, y ); // clear old cell
     this.drawCreature( targetX, targetY ); // draw at new cell
@@ -618,7 +618,8 @@ WorldBoard.prototype.enemyTurn = function() {
   var self = this;
   this.creatureLocs.forEach( function( row, y ) {
     row.forEach( function( creature, x ) {
-      if ( creature && creature.isHunting === true && creature.justMoved ===
+      if ( creature && creature.isHunting === true && creature
+        .justMoved ===
         false ) {
         self.runEnemyAI( x, y )
       }
@@ -659,7 +660,8 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
     minZero( attacker.strength - ( 0.5 * player.strength *
       terrainDefenseMod ) );
   var damageDone = minZero( genMax( strengthCompare + 1 ) );
-  this.creatureLocs[ this.playerY ][ this.playerX ].health -= damageDone;
+  this.creatureLocs[ this.playerY ][ this.playerX ].health -=
+    damageDone;
   var damageString = ""
   if ( damageDone === 0 ) {
     monstermiss.play()
@@ -673,7 +675,8 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
   this.popup( damageString, 0.5, "white", this.playerX, this.playerY )
   this.updateHealthDisplay();
   if ( player.health <= 0 ) {
-    this.popup( "THE KNIGHT IS DEAD!", 0.5, "white", this.playerX, this.playerY )
+    this.popup( "THE KNIGHT IS DEAD!", 0.5, "white", this.playerX,
+      this.playerY )
     playerdeath.play();
     $( ".creatR" + this.playerY + "C" + this.playerX ).removeClass(
       "waiting" )
@@ -688,7 +691,8 @@ WorldBoard.prototype.attackOnPlayer = function( x, y ) {
     this.drawCreature( this.playerY, this.playerX )
   }
 }
-WorldBoard.prototype.attackByPlayer = function( player, targetX, targetY ) {
+WorldBoard.prototype.attackByPlayer = function( player, targetX,
+  targetY ) {
   var self = this
   var enemy = this.creatureLocs[ targetY ][ targetX ];
   this.activateNearbyEnemies( self, this.playerX, this.playerY );
@@ -752,7 +756,8 @@ WorldBoard.prototype.checkForLevelUp = function( player ) {
     this.updateSkillDisplay();
     this.popup( "LEVEL UP!", 0.5, "white", this.playerX, this.playerY )
     var levelupDiv = $( "<div></div>" )
-    $( ".fogR" + this.playerY + "C" + this.playerX ).append( levelupDiv )
+    $( ".fogR" + this.playerY + "C" + this.playerX ).append(
+      levelupDiv )
     levelupDiv.addClass( "levelup" )
     levelupDiv.animate( {
       opacity: 1
@@ -818,7 +823,8 @@ WorldBoard.prototype.moveTowardsPlayer = function( x, y ) {
   var targetX = targetCell[ 0 ];
   var targetTerrain = this.landTiles[ targetY ][ targetX ];
   var movement = this.creatureLocs[ y ][ x ].movement
-  if ( targetY > -1 && targetX > -1 && targetY < this.height && targetX <
+  if ( targetY > -1 && targetX > -1 && targetY < this.height &&
+    targetX <
     this.width )
     if ( !this.creatureLocs[ targetY ][ targetX ] )
       if ( this.canMoveOnTerrain( movement, targetTerrain ) ) {

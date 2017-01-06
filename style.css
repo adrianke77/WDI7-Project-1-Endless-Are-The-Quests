@@ -113,7 +113,7 @@ body{
   animation-delay : 0.5s;
 }
 .hunting {
-  animation : bounce 0.4s ease infinite;
+  animation : bounce 0.4s ease infinite !important;
 }
 @keyframes bounce {
   0% {margin-top : 3.5px;}
