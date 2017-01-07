@@ -1,46 +1,60 @@
 
 html,body {
   box-sizing : border-box;
+
   height     : 100%;
   width      : 100%;
   margin     : 0;
   padding    : 0;
 }
+
 body{
   position        : relative;
   display         : flex;
+
   height          : 100%;
   width           : 100%;
+
   flex-direction  : row;
   justify-content : center;
   align-items     : center;
 }
+
 .screenback {
   position        : fixed;
   z-index         : -11;
+
   height          : 100%;
   width           : 100%;
+
   opacity         : 1;
   background      : url('./art/parchment2.jpg') no-repeat;
   background-size : cover;
 }
+
 .gameBoard {
   position : absolute;
   top      : 15%;
   left     : 15%;
+
   margin   : 15%;
 }
+
 .background {
   z-index         : -10;
+
   background      : url('./art/landhextiles-modded3.png') no-repeat;
   background-size : 340% 286%;
 }
+
 .creature {
   background      : url('./art/creatures-modded.png');
   background-size : 900% 700%;
 }
+
 .creatbox {
   position      : absolute;
+
   height        : 20px;
   width         : 20px;
   margin-top    : 7.3px;
@@ -48,27 +62,36 @@ body{
   margin-bottom : 7.3px;
   margin-left   : 5px;
 }
+
 .landbox {
   position : absolute;
+
   height   : 34.6px;
   width    : 30px;
 }
+
 .fogbox {
   position : absolute;
+
   height   : 34.6px;
   width    : 30px;
 }
+
 .fog {
   position            : absolute;
+
   background          : url('./art/landhextiles-modded3.png') no-repeat;
   background-position : 0px -66px;
   background-size     : 340% 286%;
 }
+
 .display{
   position      : fixed;
   z-index       : 10;
+
   width         : auto;
   padding       : 1%;
+
   opacity       : 0.7;
   font-family   : 'VT323', monospace;
   font-weight   : bold ;
@@ -77,51 +100,67 @@ body{
   border        : 0.1em solid rgba(0,0,0,0.8);
   border-radius : 0.5em;
 }
+
 .health {
   bottom              : 5%;
   left                : 8%;
+
   background          : url('./art/fire2.gif') no-repeat;
   background-position : 0px -2em;
   background-size     : 100% 250%;
   text-shadow         : black 0 0 0.2em ;
 }
+
 .strength {
   bottom              : 5%;
   left                : 36%;
+
   background          : linear-gradient( rgba(255,255,255,1),rgba(0,0,0,1));
   background-position : 0 1.6em;
   background-size     : 100% 100%;
 }
+
 .defense {
   right      : 7%;
   bottom     : 5%;
+
   width      : 11em;
+
   text-align : center;
 }
+
 .controlguide {
   top             : 1%;
   right           : 1%;
+
   height          : 8em;
   width           : 8em;
+
   background      : url('./art/controlguide.png') no-repeat ;
   background-size : contain !important;
   border          : 0 !important;
 }
+
 .waiting {
   animation       : bounce 2s ease infinite;
-  animation-delay : 0.5s;
 }
+
 .hunting {
   animation : bounce 0.4s ease infinite !important;
 }
+
 @keyframes bounce {
   0% {margin-top : 3.5px;}
+
   50% {margin-top : 6.5px;}
+
   100% {margin-top : 3.5px;}
 }
+
 .popup {
   animation : riseandfade 3s linear forwards;
 }
+
 @keyframes riseandfade {
   0% {
     margin-bottom : 0px;
@@ -132,12 +171,15 @@ body{
     opacity       : 0;
   }
 }
+
 .drawin {
   animation : fadein 2s linear forwards;
 }
+
 .slowappear {
   animation : fadein 4s linear forwards;
 }
+
 @keyframes slowappear {
   0% {
     opacity   : 0;
@@ -148,39 +190,53 @@ body{
     transform : scale(1);
   }
 }
+
 .fadeout {
   animation : fadein 1s linear reverse;
 }
+
 @keyframes fadein {
   0% { opacity: 0 }
   100% {opacity: 1}
 }
+
 .vtfont {
   font-family : 'VT323', monospace;
 }
+
 .hidden {
   display : none !important;
 }
+
 .levelup {
   z-index             : 50;
+
   height              : 200%;
   width               : 200%;
+
   background          : url('./art/levelup.gif') no-repeat;
   background-position : -15px -10px;
   background-size     : contain;
+
   animation           : pulse 3s linear forwards;
 }
+
 @keyframes pulse {
   0% { opacity: 0 }
+
   50% {opacity: 1}
+
   100%{opacity:0}
 }
+
 .startmenu {
   position            : fixed;
   display             : flex;
+
   height              : 100%;
   width               : 100%;
   padding             : 0;
+
   opacity             : 0.8 !important;
   background          : url('./art/victory.gif') no-repeat;
   background-position : center;
@@ -190,59 +246,74 @@ body{
   color               : black;
   line-height         : 0.1em;
   text-shadow         : white 0.1em 0.1em 0.4em;
+
   flex-direction      : column;
   align-items         : center;
 }
-.startbutton {
+
+.menubutton {
   height        : 2em;
   width         : 8em;
   margin-top    : 1em;
   padding       : 0;
+
   opacity       : 0;
   background    : linear-gradient(45deg,darkgreen,black);
   font-family   : 'VT323', monospace;
   font-size     : 0.7em;
   color         : lightgreen;
   border-radius : 0.5em;
+
   animation     : startbutton 2s linear forwards 5s;
 }
+
 @keyframes startbutton {
   0% { opacity: 0 }
   100% {opacity: 0.8}
 }
+
 .textstring {
   height        : 2em;
   width         : 15em;
   margin-top    : 1em;
+
   font-family   : 'VT323', monospace;
   font-size     : 0.5em;
   text-align    : center;
   border-radius : 0.3em;
 }
+
 .startgame {
   height        : 2em;
   width         : 10em;
   margin-top    : 1em;
   margin-top    : 3em;
   padding       : 0;
+
   background    : radial-gradient(red,yellow);
   font-family   : 'VT323', monospace;
   font-size     : 0.5em;
   border-radius : 0.5em;
 }
+
 h1,h3 {
   margin      : 0.3em;
   padding     : 0.1em;
+
   opacity     : 0;
   white-space : nowrap;
+
   animation   : slowappear 3s linear forwards 2s;
 }
+
 h1 {
   font-size : 4em;
 }
+
 h3{
   padding-top : 0.5em;
 }
+
 @keyframes slowappear {
   0% {
     opacity   : 0;
@@ -253,11 +324,14 @@ h3{
     transform : scale(1);
   }
 }
+
 .death {
   background      : url('./art/death.gif') no-repeat;
   background-size : contain;
+
   animation       : deathFadeIn 2s linear forwards ;
 }
+
 @keyframes deathFadeIn {
   0% { opacity: 0 }
   100% {
@@ -265,20 +339,36 @@ h3{
     transform : scale(3);
   }
 }
+
 .winscreen {
-  position: fixed;
-  z-index    : 50;
-  width: 30%;
-  height: 50%;
-  top: 10%;
-  background : url('./art/menu.gif') no-repeat;
-  background-size: cover;
-  background-position: center;
-  font-family   : 'VT323', monospace;
-  padding: 0.5em !important;
-  white-space: pre-wrap;
+  position            : fixed;
+  top                 : 10%;
+  z-index             : 50;
+
+  height              : 50%;
+  width               : 30%;
+  padding             : 0.5em !important;
+
+  background          : url('./art/menu.gif') no-repeat;
+  background-position : center;
+  background-size     : cover;
+  font-family         : 'VT323', monospace;
+  white-space         : pre-wrap;
+
   
 }
+
 .winanim {
-  animation       : fadein 5s linear forwards !important;
+  animation : fadein 5s linear forwards !important;
+}
+
+.instructions {
+  padding     : 5%;
+
+  font-family : 'VT323', monospace;
+  font-size   : 2em;
+  color       : black;
+  text-shadow : white 0em 0em 0.4em !important;
+  white-space : pre-wrap;
+  font-weight: bold;
 }

@@ -6,7 +6,7 @@ function GameSys() {
   this.windowScale = 0;
   var self = this;
 }
-GameSys.prototype.initNumbSeedFromString = function( string ) {
+GameSys.prototype.initNumbSeedFromString = function ( string ) {
   // returns a number betwen 0 and 1 that will always generate for the string
   var valuesArr =
     "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ "
@@ -20,46 +20,46 @@ GameSys.prototype.initNumbSeedFromString = function( string ) {
   var x = Math.sin( seed++ ) * 10000;
   numbSeed = x - Math.floor( x );
 }
-GameSys.prototype.makeKeypressListeners = function( worldBoardInstance ) {
+GameSys.prototype.makeKeypressListeners = function ( worldBoardInstance ) {
   var self = this; //make context visible to inside of event handler
-  $( document ).keyup( function( event ) {
+  $( document ).keyup( function ( event ) {
     var isMoved = false
     switch ( event.which ) {
-      case 87: // W, NW direction
-        isMoved = worldBoardInstance.playerMove( "NW" );
-        break;
-      case 69: // E, NE direction
-        isMoved = worldBoardInstance.playerMove( "NE" );
-        break;
-      case 68: // D, E direction
-        isMoved = worldBoardInstance.playerMove( "E" );
-        break;
-      case 65: // A, W direction
-        isMoved = worldBoardInstance.playerMove( "W" );
-        break;
-      case 88: // X, SE direction
-        isMoved = worldBoardInstance.playerMove( "SE" );
-        break;
-      case 90: // Z, SW direction
-        isMoved = worldBoardInstance.playerMove( "SW" );
-        break;
-      case 83: // S, wait for a turn
-        isMoved = worldBoardInstance.playerMove( "wait" );
-        break;
-      case 70: // F, Shout to attract monsters
-        isMoved = true;
-        worldBoardInstance.shout();
-        break;
+    case 87: // W, NW direction
+      isMoved = worldBoardInstance.playerMove( "NW" );
+      break;
+    case 69: // E, NE direction
+      isMoved = worldBoardInstance.playerMove( "NE" );
+      break;
+    case 68: // D, E direction
+      isMoved = worldBoardInstance.playerMove( "E" );
+      break;
+    case 65: // A, W direction
+      isMoved = worldBoardInstance.playerMove( "W" );
+      break;
+    case 88: // X, SE direction
+      isMoved = worldBoardInstance.playerMove( "SE" );
+      break;
+    case 90: // Z, SW direction
+      isMoved = worldBoardInstance.playerMove( "SW" );
+      break;
+    case 83: // S, wait for a turn
+      isMoved = worldBoardInstance.playerMove( "wait" );
+      break;
+    case 70: // F, Shout to attract monsters
+      isMoved = true;
+      worldBoardInstance.shout();
+      break;
     }
     if ( isMoved === true ) self.movesMade++
   } )
 }
-GameSys.prototype.makeZoomListener = function() {
+GameSys.prototype.makeZoomListener = function () {
   $( window ).resize( {
     self: this
   }, this.resizeInfoDisplay );
 }
-GameSys.prototype.makeFixedDisplays = function() {
+GameSys.prototype.makeFixedDisplays = function () {
   var healthDisplay = $( "<div></div>" );
   var strengthDisplay = $( "<div></div>" );
   var defenseDisplay = $( "<div></div>" );
@@ -78,8 +78,8 @@ GameSys.prototype.makeFixedDisplays = function() {
   this.startFontHeight = this.windowStartWidth / DisplayFontScale;
   $( ".display" ).css( "font-size", this.startFontHeight );
 }
-GameSys.prototype.resizeInfoDisplay = function( event ) {
-  if ( typeof event !== "undefined" ) 
+GameSys.prototype.resizeInfoDisplay = function ( event ) {
+  if ( typeof event !== "undefined" )
     self = event.data.self;
   else
     self = this
@@ -87,12 +87,12 @@ GameSys.prototype.resizeInfoDisplay = function( event ) {
   var adjustedFontSize = self.startFontHeight * self.windowScale;
   $( ".display" ).css( "font-size", adjustedFontSize );
 }
-GameSys.prototype.resetGame = function( startString ) {
+GameSys.prototype.resetGame = function ( startString ) {
   $( ".gameBoard" ).remove();
   gameSys.initNumbSeedFromString( startString );
   var width, height
-    width = genRange(20,30);
-    height = genRange(20,30);
+  width = genRange( 20, 30 );
+  height = genRange( 20, 30 );
   var worldBoard = new WorldBoard( width, height );
   worldBoard.makeBlankBoardHtml();
   worldBoard.randomizeTerrain();
@@ -108,17 +108,28 @@ GameSys.prototype.resetGame = function( startString ) {
   // worldBoard.drawEntireMap() // check positions of map tiles and monsters
   // worldBoard.winScreen() // test win function
 }
-GameSys.prototype.makeStartListener = function() {
+GameSys.prototype.makeStartListeners = function () {
   $( ".startbutton" ).click( {
     self: this
   }, this.startGame );
+  $( ".instructbutton" ).click( {
+    self: this
+  }, this.showInstructions )
 }
-GameSys.prototype.startGame = function( event ) {
+GameSys.prototype.showInstructions = function () {
+  $( ".startmenu" ).addClass( "hidden" );
+  $( ".instructions" ).removeClass( "hidden" ).on( "click", function () {
+    $( ".startmenu" ).removeClass( "hidden" );
+    $( ".instructions" ).addClass( "hidden" );
+  } )
+}
+GameSys.prototype.startGame = function ( event ) {
   self = event.data.self
   $( ".startbutton" ).addClass( "hidden" )
+  $( ".instructbutton" ).addClass( "hidden" )
   $( ".textstring" ).removeClass( "hidden" )
   $( ".startgame" ).removeClass( "hidden" )
-    .on( "click", function() {
+    .on( "click", function () {
       var startString = $( ".textstring" ).val()
       $( ".startmenu" ).addClass( "hidden" )
       self.resetGame( startString )
@@ -129,4 +140,4 @@ GameSys.prototype.startGame = function( event ) {
 
 var gameSys = new GameSys()
 $( window ).css( "zoom", "100%" )
-gameSys.makeStartListener();
+gameSys.makeStartListeners();
