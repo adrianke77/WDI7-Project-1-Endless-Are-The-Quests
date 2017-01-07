@@ -2,26 +2,26 @@
 // when passing arguments to function or handling coord-pair array : x first, then y
 
 // make sound reference vars
-const hit = document.getElementById( "hit" );
-const heromiss = document.getElementById( "heromiss" );
-const monstermiss = document.getElementById( "monstermiss" );
-const step = document.getElementById( "step" );
-const birds1 = document.getElementById( "birds1" );
-const birds2 = document.getElementById( "birds2" );
-const birds3 = document.getElementById( "birds3" );
-const birds4 = document.getElementById( "birds4" );
-const monsterdeath = document.getElementById( "monsterdeath" );
-const playerdeath = document.getElementById( "playerdeath" );
-const levelup = document.getElementById( "levelup" );
-const shout = document.getElementById( "shout" );
+var hit = document.getElementById( "hit" );
+var heromiss = document.getElementById( "heromiss" );
+var monstermiss = document.getElementById( "monstermiss" );
+var step = document.getElementById( "step" );
+var birds1 = document.getElementById( "birds1" );
+var birds2 = document.getElementById( "birds2" );
+var birds3 = document.getElementById( "birds3" );
+var birds4 = document.getElementById( "birds4" );
+var monsterdeath = document.getElementById( "monsterdeath" );
+var playerdeath = document.getElementById( "playerdeath" );
+var levelup = document.getElementById( "levelup" );
+var shout = document.getElementById( "shout" );
 
-const DisplayFontScale = 30 // the bigger the nunmber the smaller the display font size
+var DisplayFontScale = 30 // the bigger the nunmber the smaller the display font size
 
-const difficulty = 40 // the bigger the number the harder the game
+var difficulty = 40 // the bigger the number the harder the game
 
-const shouts = [ "GET OVER HERE!" ]
+var shouts = [ "GET OVER HERE!" ]
 
-const landTilesCoords = {
+var landTilesCoords = {
   plain: [ 0, 0 ],
   swamp: [ -36, 0 ],
   hill: [ -72, 0 ],
@@ -32,7 +32,7 @@ const landTilesCoords = {
   fog: [ 0, -66 ]
 }
 
-const creatureTypes = {
+var creatureTypes = {
   //name:[0:health 1:movement 2:strength 3:speed 4:treasureMin 5:treasureMax
   // 6: spriteX, 7: spriteY 8:rarity]
   //sprite X and Y are in 1-index
@@ -60,7 +60,7 @@ const creatureTypes = {
   fallenknight: [ 20, "walk", 20, 1, 3, 5, 1, 5, 9999 ],
 }
 
-const terrainDefenseVals = {
+var terrainDefenseVals = {
   // bonus to defense when being attacked depending on terrain
   plain: 1,
   swamp: 0.8,
