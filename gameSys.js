@@ -106,7 +106,7 @@ GameSys.prototype.resetGame = function ( startString ) {
   worldBoard.drawCreatures();
   //testing
   // worldBoard.drawEntireMap() // check positions of map tiles and monsters
-  worldBoard.winScreen() // test win function
+  // worldBoard.winScreen() // test win function
 }
 GameSys.prototype.makeStartListeners = function () {
   $( ".startbutton" ).click( {
