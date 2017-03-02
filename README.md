@@ -3,7 +3,7 @@ This repo is for the Unit 1 game project for Web Developer Immersive course, 7th
 
 The game is titled Endless Are The Quests. The player controls the most recent in a series of heroes that seek to save the land by breaking his way through hordes of monsters and destroying the source of evil: the possessed, fallen body of a previous hero. 
 
-A subfolder contains a mini chess project, which was useful for practicing grid system and OOPing the game logic.
+A subfolder contains a mini chess project, which was useful for practicing making a grid system and OOPing the game logic.
 
 ### Prerequisites
 
