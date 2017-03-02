@@ -3,14 +3,6 @@ This repo is for the Unit 1 game project for Web Developer Immersive course, 7th
 
 The game is titled Endless Are The Quests. The player controls the most recent in a series of heroes that seek to save the land by breaking his way through hordes of monsters and destroying the source of evil: the possessed, fallen body of a previous hero. 
 
-Every victory wins new peace for the land, but it also inevitably causes the curse to pass into the body of the slayer, who at best can resist it for one generation; about twenty years of time.Then he loses himself to the darkness and another must come to eliminate him. 
-
-There is no alternative; even an attempt at destroying oneself will simply free the evil to possess another. 
-
-Then a new hero must fight his way through the hordes and sacrifice himself, in order to protect the land.  
-
-An (somewhat) incomplete chess game is in a subfolder, done in the week preceding the actual project.
-
 ### Prerequisites
 
 No special prerequisites. Just follow How To Use below.
@@ -19,9 +11,7 @@ No special prerequisites. Just follow How To Use below.
 
 Git clone the repo, then opening index.html with your browser will start that game. Internet access is required to load music from Youtube and jQuery.
 
-Alternatively, Git Pages hosted copy is at 
-
-adrianke77.github.io/wdi-7-project-1-adrianke77/
+Alternatively, Git Pages hosted live site here: [Endless are the Quests] (https://adrianke77.github.io/WDI7-Project-1-Endless-Are-The-Quests) 
 
 ## Built With
 
