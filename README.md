@@ -13,7 +13,7 @@ No special prerequisites. Just follow How To Use below.
 
 Git clone the repo, then opening index.html with your browser will start that game. Internet access is required to load music from Youtube and jQuery.
 
-Alternatively, Git Pages hosted live site here: [Endless are the Quests] (https://adrianke77.github.io/WDI7-Project-1-Endless-Are-The-Quests) 
+Alternatively, Git Pages hosted live site here: [Endless are the Quests](https://adrianke77.github.io/WDI7-Project-1-Endless-Are-The-Quests) 
 
 ## Built With
 
